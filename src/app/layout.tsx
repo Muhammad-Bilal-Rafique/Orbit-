@@ -4,6 +4,8 @@ import "@/app/globals.css";
 import { cn } from "@/lib/utils";
 import {Toaster} from "@/components/ui/sonner";
 import {SessionProvider} from "next-auth/react";
+import Navbar from "@/components/shared/Navbar"
+import Footer from "@/components/shared/Footer";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -33,8 +35,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionProvider>
+        <Navbar />
         {children}
         <Toaster position="top-right" />
+        <Footer/>
         </SessionProvider>
       </body>
     </html>

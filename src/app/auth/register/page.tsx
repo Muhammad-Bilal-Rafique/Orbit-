@@ -4,6 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useState } from "react";
+import Image from "next/image";
+import Logo from "@/assets/Logo.png";
 
 import {
   Card,
@@ -19,6 +23,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const {
     register,
@@ -35,7 +40,7 @@ export default function RegisterForm() {
           email: data.email,
         });
         if (res.status === 200) {
-          router.push(`/verify-email?email=${data.email}`);
+          router.push(`/auth/verify-email?email=${data.email}`);
         } else {
           toast.error("Failed to send verification email. Please try again.");
         }
@@ -57,6 +62,18 @@ export default function RegisterForm() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <Card className="w-full max-w-md">
+                {/*  lOGO */}
+        <div className="flex flex-col items-center justify-center pt-1 pb-1">
+          <div className="relative w-48 h-24">
+            <Image
+              src={Logo}
+              alt="Orbit Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+        </div>
         <CardHeader>
           <CardTitle>Create an account</CardTitle>
           <CardDescription>
@@ -143,38 +160,59 @@ export default function RegisterForm() {
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="********"
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 8,
-                    message: "Password must be at least 8 characters",
-                  },
-                })}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 8,
+                      message: "Password must be at least 8 characters",
+                    },
+                  })}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={isSubmitting}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground disabled:opacity-50 transition-colors"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
               {errors.password && (
                 <span className="text-xs text-destructive">
                   {errors.password.message}
                 </span>
               )}
             </div>
-
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="mt-2 w-full"
+              className="mt-2 w-full cursor-pointer"
             >
-              {isSubmitting ? "Creating Account..." : "Create Account"}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Creating Account...
+                </>
+              ) : (
+                "Create Account"
+              )}
             </Button>
           </form>
 
           <p className="text-sm text-muted-foreground text-center mt-6">
             Already have an account?{" "}
             <Link
-              href="/login"
+              href="/auth/login"
               className="text-primary hover:underline font-medium"
             >
               Login

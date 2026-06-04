@@ -1,11 +1,12 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { connectDb } from "../lib/connectDb";
-import { User } from "../models/User";
+import { connectDb } from "@/lib/connectDb";
+import { User } from "@/models/User";
 import bcrypt from "bcryptjs";
 import { DefaultSession } from "next-auth";
 import Google from "next-auth/providers/google";
 import { CredentialsSignin } from "next-auth";
+
 
 class notVerifiedError extends CredentialsSignin {
   code = "not_verified";

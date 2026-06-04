@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { User } from "../../../../../models/User";
-import { connectDb } from "../../../../../lib/connectDb";
+import { User } from "@/models/User";
+import { connectDb } from "@/lib/connectDb";
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, code } = await request.json();
+    const { email, code, } = await request.json();
     // Connect to the database and find the user by email
     await connectDb();
     const user = await User.findOne({ email });
@@ -26,6 +26,6 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ error }, { status: 500 });
+    return NextResponse.json({ message: "Something went wrong, please try again" }, { status: 500 });
   }
 }

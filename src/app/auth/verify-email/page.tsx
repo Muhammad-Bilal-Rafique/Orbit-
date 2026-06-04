@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
+import Logo from "@/assets/Logo.png";
 import {
   Card,
   CardContent,
@@ -10,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -23,10 +26,11 @@ export default function VerifyEmailPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+  const forgotPassword = searchParams.get("forgotPassword") === "true";
 
   useEffect(() => {
-    if (!email) router.push("/register");
-  }, [email]);
+    if (!email) router.push("/auth/register");
+  }, [email, router]);
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -42,14 +46,20 @@ export default function VerifyEmailPage() {
 
     setIsSubmitting(true);
     try {
-      await axios.post("/api/auth/verify-email", { email, code });
-      toast.success("Email verified successfully!");
-      router.push("/login");
+      if (forgotPassword) {
+        await axios.post("/api/auth/verify-reset-code", { email, code });
+        router.push("/auth/reset-password?email=" + email);
+        return;
+      } else {
+        await axios.post("/api/auth/verify-email", { email, code });
+        toast.success("Email verified successfully!");
+        router.push("/auth/login");
+      }
     } catch (error: any) {
       if (error.response?.status === 400) {
-        toast.error("Invalid or expired code. Please try again.");
+        toast.error(error.response?.data.message);
       } else if (error.response?.status === 404) {
-        toast.error("Account not found.");
+        toast.error(error.response?.data.message);
       } else {
         toast.error("Something went wrong. Please try again.");
       }
@@ -75,6 +85,17 @@ export default function VerifyEmailPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <Card className="w-full max-w-md">
+        <div className="flex flex-col items-center justify-center py-1">
+          <div className="relative w-48 h-24">
+            <Image
+              src={Logo}
+              alt="Orbit Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+        </div>
         <CardHeader>
           <CardTitle>Check your email</CardTitle>
           <CardDescription>
@@ -83,7 +104,6 @@ export default function VerifyEmailPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-
           <div className="flex flex-col gap-2">
             <Label htmlFor="code">Verification code</Label>
             <Input
@@ -93,15 +113,19 @@ export default function VerifyEmailPage() {
               maxLength={6}
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+              disabled={isSubmitting}
             />
           </div>
 
-          <Button
-            onClick={onSubmit}
-            disabled={isSubmitting}
-            className="w-full"
-          >
-            {isSubmitting ? "Verifying..." : "Verify email"}
+          <Button onClick={onSubmit} disabled={isSubmitting} className="w-full">
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Verifying...
+              </>
+            ) : (
+              "Verify email"
+            )}
           </Button>
 
           <p className="text-sm text-muted-foreground text-center">
@@ -109,16 +133,20 @@ export default function VerifyEmailPage() {
             <button
               onClick={onResend}
               disabled={isResending || cooldown > 0}
-              className="text-primary hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-primary hover:underline font-medium disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-1"
             >
-              {cooldown > 0
-                ? `Resend in ${cooldown}s`
-                : isResending
-                ? "Sending..."
-                : "Resend code"}
+              {cooldown > 0 ? (
+                `Resend in ${cooldown}s`
+              ) : isResending ? (
+                <>
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                "Resend code"
+              )}
             </button>
           </p>
-
         </CardContent>
       </Card>
     </div>
