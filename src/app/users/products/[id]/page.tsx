@@ -4,6 +4,8 @@ interface Props {
   params: { id: string };
 }
 
-export default function ProductDetailPage({ params }: Props) {
-  return <ProductDetailClient productId={params.id} />;
+
+export default async function ProductDetailPage({ params }: Props) {
+  const { id } = await params
+  return <ProductDetailClient productId={id} />;
 }

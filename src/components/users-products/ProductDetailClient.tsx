@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
+import { useCartStore } from "@/lib/cartStore";
 
 interface ProductDetailClientProps {
   productId: string;
@@ -13,6 +14,8 @@ export default function ProductDetailClient({
   productId,
 }: ProductDetailClientProps) {
   const product = mockProducts.find((p) => p._id === productId);
+
+  const addToCart = useCartStore((state) => state.addItem);
 
   if (!product) {
     return (
@@ -32,7 +35,10 @@ export default function ProductDetailClient({
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <Link href="/users/products" className="text-primary hover:underline mb-6 inline-block">
+        <Link
+          href="/users/products"
+          className="text-primary hover:underline mb-6 inline-block"
+        >
           ← Back to Products
         </Link>
 
@@ -72,24 +78,30 @@ export default function ProductDetailClient({
                   ✓ In Stock ({product.stock} available)
                 </span>
               ) : (
-                <span className="text-destructive font-semibold">Out of Stock</span>
+                <span className="text-destructive font-semibold">
+                  Out of Stock
+                </span>
               )}
             </div>
 
             {/* Buttons */}
             <div className="space-y-3">
-              <Button 
-                size="lg" 
+              <Button
+                onClick={() =>
+                  addToCart({
+                    productId: product._id,
+                    name: product.name,
+                    price: product.price,
+                    imageUrl: product.imageUrl,
+                  })
+                }
+                size="lg"
                 className="w-full"
                 disabled={product.stock === 0}
               >
                 Add to Cart
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="w-full"
-              >
+              <Button variant="outline" size="lg" className="w-full">
                 <Heart className="w-4 h-4 mr-2" />
                 Add to Wishlist
               </Button>
@@ -97,7 +109,9 @@ export default function ProductDetailClient({
 
             {/* Keywords */}
             <div className="mt-8 pt-8 border-t border-border">
-              <p className="text-sm font-semibold text-foreground mb-3">Tags:</p>
+              <p className="text-sm font-semibold text-foreground mb-3">
+                Tags:
+              </p>
               <div className="flex flex-wrap gap-2">
                 {product.keywords.map((keyword) => (
                   <span

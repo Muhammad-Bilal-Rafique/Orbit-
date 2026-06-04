@@ -6,8 +6,10 @@ import Logo from "@/assets/Logo.png";
 import { Input } from "@/components/ui/input";
 import { ShoppingCart, User, Menu, X, Search, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useCartStore } from "@/lib/cartStore";
 
 export default function Navbar() {
+  const cartCount = useCartStore((state) => state.getTotalItems());
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
@@ -71,11 +73,13 @@ export default function Navbar() {
 
         {/* Icons */}
         <div className="flex items-center gap-4">
-          <Link href="/cart" className="relative">
+          <Link href="/users/cart" className="relative">
             <ShoppingCart className="w-5 h-5 text-foreground hover:text-primary transition-colors" />
-            <span className="absolute -top-2 -right-2 bg-destructive text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              0
-            </span>
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-destructive text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
           </Link>
 
           <button className="text-foreground hover:text-primary transition-colors">
@@ -123,7 +127,7 @@ export default function Navbar() {
               Products
             </Link>
             <Link
-              href="/cart"
+              href="/users/cart"
               className="block text-sm font-medium text-foreground hover:text-primary py-2"
             >
               Cart
