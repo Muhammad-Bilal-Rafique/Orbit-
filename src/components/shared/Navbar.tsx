@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "@/assets/Logo.png";
@@ -9,10 +9,15 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/cartStore";
 
 export default function Navbar() {
+  const [mounted , setMounted] = useState<boolean>(false)
   const cartCount = useCartStore((state) => state.getTotalItems());
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSearch = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -75,7 +80,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <Link href="/users/cart" className="relative">
             <ShoppingCart className="w-5 h-5 text-foreground hover:text-primary transition-colors" />
-            {cartCount > 0 && (
+            {mounted && cartCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-destructive text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {cartCount}
               </span>

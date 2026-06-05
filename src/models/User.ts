@@ -15,7 +15,7 @@ const UserSchema: Schema = new Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String},
+    password: { type: String },
     isVerified: { type: Boolean, default: false },
     code: { type: String, default: null },
     expiration: { type: Date, default: null },
@@ -26,4 +26,5 @@ const UserSchema: Schema = new Schema(
 );
 
 export const User =
-  mongoose.models.User_accounts || mongoose.model<IUser>("User_accounts", UserSchema);
+  mongoose.models.User_accounts ||
+  mongoose.model<IUser>("User_accounts", UserSchema);

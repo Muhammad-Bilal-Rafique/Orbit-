@@ -93,7 +93,7 @@ export default function CartPage() {
               <span className="text-2xl font-bold text-foreground">${grandTotal.toFixed(2)}</span>
             </div>
 
-            <Link href="/checkout" className="w-full">
+            <Link href="/users/checkout" className="w-full">
               <Button className="w-full">Proceed to Checkout</Button>
             </Link>
 
