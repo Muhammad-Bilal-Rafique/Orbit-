@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
       metadata: {
         userId: session.user.id,
         userEmail: session.user.email,
+        items: JSON.stringify(items),
       },
     });
     return NextResponse.json(
