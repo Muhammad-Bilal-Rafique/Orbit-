@@ -1,11 +1,24 @@
-"use client";
-import { mockProducts } from "@/lib/mockProducts";
 import ProductCard from "@/components/users-products/ProductCard";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import {ProductTypes} from "@/types/ProductTypes"
+
+
+const getFeaturedProducts = async () => {
+  try{
+    const res = await fetch('http://localhost:3000/api/user/getFeatured')
+    const data = await res.json()
+    return data.products
+  } catch (error) {
+    if (error) {
+      console.log(error)
+  }
+  }
+}
+
+const featured : ProductTypes[] = await getFeaturedProducts()
 
 export default function FeaturedProducts() {
-  const featured = mockProducts.slice(0, 8);
 
   return (
     <section className="bg-background py-16 md:py-24">

@@ -1,19 +1,18 @@
 "use client";
-import { mockProducts } from "@/lib/mockProducts";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
+import {ProductTypes} from "@/types/ProductTypes";
 
 interface ProductDetailClientProps {
-  productId: string;
+  product: ProductTypes;
 }
 
 export default function ProductDetailClient({
-  productId,
+  product,
 }: ProductDetailClientProps) {
-  const product = mockProducts.find((p) => p._id === productId);
 
   const addToCart = useCartStore((state) => state.addItem);
 
