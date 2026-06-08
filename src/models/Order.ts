@@ -11,8 +11,22 @@ export interface IOrder extends Document {
     quantity: number;
   }[];
   totalAmount: number;
-  status: "pending" | "processing" | "shipped" | "delivered";
+  status:
+    | "paid"
+    | "cancelled"
+    | "pending"
+    | "processing"
+    | "shipped"
+    | "delivered";
   stripeSessionId: string;
+    shippingAddress: {
+      fullName: string;
+      street: string;
+      city: String;
+      state: string;
+      zip: string;
+      country: string;
+    },
   createdAt: Date;
   updatedAt: Date;
 }
@@ -32,13 +46,21 @@ const OrderSchema: Schema = new Schema(
     totalAmount: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["pending", "processing", "shipped", "delivered"],
+      enum: ["pending", "processing", "shipped", "delivered","paid","cancelled"],
       default: "pending",
+    },
+      shippingAddress: {
+        fullName: String,
+        street: String,
+        city: String,
+        state: String,
+        zip: String,
+        country: String,
     },
     stripeSessionId: { type: String, required: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Order =
-  mongoose.models.Order || mongoose.model<IOrder>("orders", OrderSchema);
+  mongoose.models.orders || mongoose.model<IOrder>("orders", OrderSchema);

@@ -21,7 +21,7 @@ interface TotalBreakdown {
 export default function CheckoutPage(): React.ReactNode {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { items, getTotalPrice, clearCart } = useCartStore();
+  const { items, getTotalPrice } = useCartStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const calculateTotals = (): TotalBreakdown => {

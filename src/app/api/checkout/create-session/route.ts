@@ -40,11 +40,12 @@ export async function POST(request: NextRequest) {
         items: JSON.stringify(items),
         totalAmount: totalAmount.toString(),
       },
+      shipping_address_collection: {
+        allowed_countries: ["PK", "US", "IN"],
+      },
+      billing_address_collection: "auto",
     });
-    return NextResponse.json(
-      { url: checkoutSession.url },
-      { status: 200 },
-    );
+    return NextResponse.json({ url: checkoutSession.url }, { status: 200 });
   } catch (error) {
     console.error("Stripe error:", error);
     return NextResponse.json(

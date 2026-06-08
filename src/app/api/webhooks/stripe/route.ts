@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     if (!signature) {
       return NextResponse.json(
         { message: "Missing stripe signature" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -25,34 +25,46 @@ export async function POST(request: NextRequest) {
     } catch (err: any) {
       return NextResponse.json(
         { message: "Webhook signature verification failed" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object as Stripe.Checkout.Session;
+if (event.type === "checkout.session.completed") {
+  const session = event.data.object as any;
 
-      await connectDb();
+  await connectDb();
 
-      const order = new Order({
-        userId: session.metadata?.userId,
-        userEmail: session.metadata?.userEmail,
-        items: session.metadata?.items
-          ? JSON.parse(session.metadata.items)
-          : [],
-        totalAmount: session.metadata?.totalAmount,
-        status: "processing",
-        stripeSessionId: session.id,
-      });
+  // Shipping is in collected_information
+  const shippingDetails = session.collected_information?.shipping_details || {};
+  const shippingAddress = shippingDetails.address || {};
 
-      await order.save();
-    }
+  const order = new Order({
+    userId: session.metadata?.userId,
+    userEmail: session.metadata?.userEmail,
+    items: session.metadata?.items
+      ? JSON.parse(session.metadata.items)
+      : [],
+    totalAmount: parseFloat(session.metadata?.totalAmount || "0"),
+    status: "paid",
+    stripeSessionId: session.id,
+    shippingAddress: {
+      fullName: shippingDetails.name,
+      street: shippingAddress.line1,
+      city: shippingAddress.city,
+      state: shippingAddress.state,
+      zip: shippingAddress.postal_code,
+      country: shippingAddress.country,
+    },
+  });
+
+  await order.save();
+}
 
     return NextResponse.json({ received: true }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { message: "Webhook handler failed" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
