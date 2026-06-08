@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
         userId: session.user.id,
         userEmail: session.user.email,
         items: JSON.stringify(items),
+        totalAmount: totalAmount.toString(),
       },
     });
     return NextResponse.json(

@@ -9,6 +9,7 @@ export interface IUser extends Document {
   expiration: Date | null;
   resetCode?: string | null;
   resetExpiration?: Date | null;
+  role: "user" | "admin";
 }
 
 const UserSchema: Schema = new Schema(
@@ -21,6 +22,11 @@ const UserSchema: Schema = new Schema(
     expiration: { type: Date, default: null },
     resetCode: { type: String, default: null },
     resetExpiration: { type: Date, default: null },
+    role:{
+      type:String,
+      enum:["user","admin"],
+      default:"user"
+    }
   },
   { timestamps: true },
 );

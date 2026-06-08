@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         items: session.metadata?.items
           ? JSON.parse(session.metadata.items)
           : [],
-        totalAmount: (session.amount_total || 0) / 100,
+        totalAmount: session.metadata?.totalAmount,
         status: "processing",
         stripeSessionId: session.id,
       });

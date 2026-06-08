@@ -15,7 +15,6 @@ interface CartStore {
     removeItem:(productId:string)=>void
     updateQuantity:(productId:string , quantity:number)=>void
     clearCart:()=>void
-    mergeCart:(dbItems:CartItem[])=>void
     getTotalPrice:()=>number
     getTotalItems:()=>number
 }
@@ -57,22 +56,6 @@ export const useCartStore = create<CartStore>()(
             },
             getTotalItems:()=>{
                 return get().items.reduce((total,item)=>total + item.quantity,0)
-            },
-            mergeCart:(dbItems)=>{
-                set((state)=>{
-                    const merged = [...dbItems];
-                    state.items.forEach((guestItem)=>{
-                        const existing = merged.find(
-                            (item)=>item.productId === guestItem.productId
-                        )
-                        if(existing){
-                            existing.quantity += guestItem.quantity
-                        }else{
-                            merged.push(guestItem)
-                        }
-                    })
-                    return {items:merged}
-                })
             }
         }),
         {
