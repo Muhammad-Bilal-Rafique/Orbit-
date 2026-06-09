@@ -30,7 +30,7 @@ const ProductsList = ({ Products }: { Products: ProductTypes[] }) => {
         <h1 className="text-3xl font-bold text-foreground mb-8">Products</h1>
 
         <div className="space-y-2 bg-card border border-border rounded-lg">
-          {products.map((product) => (
+          {products.map((product, index) => (
             <div
               key={product._id}
               className="flex items-center justify-between p-4 border-b border-border last:border-b-0 hover:bg-secondary/50"
@@ -39,8 +39,10 @@ const ProductsList = ({ Products }: { Products: ProductTypes[] }) => {
                 <Image
                   src={product.imageUrl}
                   alt={product.name}
+                  priority={index < 2}
                   width={50}
                   height={50}
+                  unoptimized
                   className="rounded object-cover"
                 />
                 <div>
@@ -49,7 +51,9 @@ const ProductsList = ({ Products }: { Products: ProductTypes[] }) => {
               </div>
 
               <div className="flex items-center gap-8 mr-4">
-                <p className="text-sm text-muted-foreground">
+                <p
+                  className={`text-sm font-medium ${product.stock > 10 ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"}`}
+                >
                   Stock: {product.stock}
                 </p>
                 <p className="text-sm text-muted-foreground">
@@ -59,6 +63,7 @@ const ProductsList = ({ Products }: { Products: ProductTypes[] }) => {
 
               <div className="flex gap-2">
                 <Button
+                className="cursor-pointer"
                   onClick={() => {
                     setSelectedProduct(product);
                     setOpen(true);
@@ -66,12 +71,9 @@ const ProductsList = ({ Products }: { Products: ProductTypes[] }) => {
                   size="sm"
                   variant="ghost"
                 >
-                  <Pencil className="w-4 h-4" />
+                  <Pencil className="w-4 h-4 text-green-800" />
                 </Button>
-                <DeleteConfirm
-                  product={product}
-                  onConfirm={handleRefetch}
-                />
+                <DeleteConfirm product={product} onConfirm={handleRefetch} />
               </div>
             </div>
           ))}

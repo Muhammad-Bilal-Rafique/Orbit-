@@ -45,7 +45,7 @@ if (event.type === "checkout.session.completed") {
       ? JSON.parse(session.metadata.items)
       : [],
     totalAmount: parseFloat(session.metadata?.totalAmount || "0"),
-    status: "paid",
+    status: "processing",
     stripeSessionId: session.id,
     shippingAddress: {
       fullName: shippingDetails.name,

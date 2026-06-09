@@ -21,8 +21,8 @@ const DeleteConfirm = ({ product, onConfirm }: { product: ProductTypes; onConfir
 
   return (
     <>
-      <Button size="sm" variant="ghost" onClick={() => setOpen(true)}>
-        <Trash2 className="w-4 h-4" />
+      <Button className="cursor-pointer" size="sm" variant="ghost" onClick={() => setOpen(true)}>
+        <Trash2 className="w-4 h-4 text-red-800 cursor-pointer" />
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>

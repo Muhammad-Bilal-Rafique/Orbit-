@@ -1,7 +1,7 @@
 // /models/Order.ts
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface IOrder extends Document {
+ interface IOrder extends Document {
   userId: string;
   userEmail: string;
   items: {
@@ -12,7 +12,6 @@ export interface IOrder extends Document {
   }[];
   totalAmount: number;
   status:
-    | "paid"
     | "cancelled"
     | "pending"
     | "processing"
@@ -46,7 +45,7 @@ const OrderSchema: Schema = new Schema(
     totalAmount: { type: Number, required: true },
     status: {
       type: String,
-      enum: ["pending", "processing", "shipped", "delivered","paid","cancelled"],
+      enum: ["pending", "processing", "shipped", "delivered","cancelled"],
       default: "pending",
     },
       shippingAddress: {
