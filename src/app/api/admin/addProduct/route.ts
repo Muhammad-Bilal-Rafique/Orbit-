@@ -31,6 +31,9 @@ export async function POST(request: NextRequest) {
     const uploadResult = await cloudinary.uploader.upload(imageUrl, {
       folder: "orbit_products",
       resource_type: "auto",
+      quality: "auto",
+      format:"webp"
+      
     });
 
     // Connect to DB
