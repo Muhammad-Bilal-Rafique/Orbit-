@@ -24,7 +24,7 @@ export default function OrderHistoryClient({ initialOrders }: OrderHistoryClient
     <div className="space-y-6">
       {/* FILTER TABS */}
       <Tabs defaultValue="all" onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid grid-cols-5 md:w-[600px] bg-secondary/40 border border-border p-1">
+        <TabsList className="grid grid-cols-5 md:w-150 bg-secondary/40 border border-border p-1">
           <TabsTrigger value="all" className="text-xs uppercase font-semibold">All</TabsTrigger>
           <TabsTrigger value="pending" className="text-xs uppercase font-semibold">Pending</TabsTrigger>
           <TabsTrigger value="processing" className="text-xs uppercase font-semibold">Processing</TabsTrigger>

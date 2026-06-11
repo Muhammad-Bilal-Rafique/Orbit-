@@ -26,6 +26,7 @@ import mongoose, { Document, Schema } from "mongoose";
       zip: string;
       country: string;
     },
+    isReviewed: boolean,
   createdAt: Date;
   updatedAt: Date;
 }
@@ -57,6 +58,10 @@ const OrderSchema: Schema = new Schema(
         country: String,
     },
     stripeSessionId: { type: String, required: true },
+    isReviewed:{
+      type:Boolean,
+      default:false
+    }
   },
   { timestamps: true },
 );

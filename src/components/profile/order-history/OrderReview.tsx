@@ -6,13 +6,18 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 
 interface ReviewModalProps {
   productId: string;
   productName: string;
+  orderId:string
+  onReviewSuccess: () => void;
 }
 
-export default function ReviewModal({ productId, productName }: ReviewModalProps) {
+export default function ReviewModal({ productId, productName,orderId,onReviewSuccess }: ReviewModalProps) {
+  const { data: session} = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
@@ -31,16 +36,11 @@ export default function ReviewModal({ productId, productName }: ReviewModalProps
 
     setIsSubmitting(true);
     try {
-      // 💡 TO-DO PART 2/3: Real POST API implementation using Axios
-      // await axios.post("/api/products/addReview", { productId, rating, comment });
       
-      console.log("Review payload verified:", { productId, rating, comment });
-      
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      toast.success("Review architecture submitted successfully!");
+      await axios.post("/api/user/orderReviews", {userId:session?.user?.id ,orderId, productId , rating, comment});
+      toast.success("Review submitted successfully!");
       setIsOpen(false);
-      
+      onReviewSuccess();
       setRating(0);
       setComment("");
     } catch (error: any) {
@@ -52,15 +52,13 @@ export default function ReviewModal({ productId, productName }: ReviewModalProps
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      {/* ⚡ CRITICAL FIX: Removed asChild and nested <Button>. 
-          Using clean custom interactive wrapper class direct on trigger */}
       <DialogTrigger className="h-7 text-xs px-3 border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-500 font-semibold rounded-md transition-all duration-200 flex items-center justify-center gap-1 cursor-pointer focus:outline-none select-none">
         <MessageSquare className="w-3 h-3" />
         <span>Write Review</span>
       </DialogTrigger>
 
       {/* POP-UP MODAL PANEL */}
-      <DialogContent className="sm:max-w-[425px] border-border bg-card text-foreground shadow-lg">
+      <DialogContent className="sm:max-w-106 border-border bg-card text-foreground shadow-lg">
         <DialogHeader>
           <DialogTitle className="text-lg font-bold">Product Review Matrix</DialogTitle>
           <DialogDescription className="text-muted-foreground text-xs leading-relaxed">
@@ -104,7 +102,7 @@ export default function ReviewModal({ productId, productName }: ReviewModalProps
               placeholder="What did you like or dislike? Detail your technical or stylistic appraisal..."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full min-h-25 max-w-full border-border bg-background resize-none focus-visible:ring-1 focus-visible:ring-primary text-sm whitespace-pre-wrap break-words break-all box-border"
+              className="w-full min-h-25 max-w-full border-border bg-background resize-none focus-visible:ring-1 focus-visible:ring-primary text-sm whitespace-pre-wrap wrap-break-word break-all box-border"
               maxLength={300}
             />
             <div className="text-[10px] text-muted-foreground text-right">
@@ -122,9 +120,9 @@ export default function ReviewModal({ productId, productName }: ReviewModalProps
               size="sm" 
               onClick={handleSubmitReview} 
               disabled={isSubmitting}
-              className="text-xs font-semibold bg-primary hover:bg-primary/90 text-primary-foreground min-w-[100px]"
+              className="text-xs font-semibold bg-primary hover:bg-primary/90 text-primary-foreground min-w-25"
             >
-              {isSubmitting ? "Syncing..." : "Submit Review"}
+              {isSubmitting ? "Submitting..." : "Submit Review"}
             </Button>
           </div>
         </div>

@@ -26,6 +26,7 @@ export interface OrderType {
   status: OrderStatus;
   shippingAddress: ShippingAddress;
   stripeSessionId: string;
+  isReviewed: boolean;
   createdAt: string; 
   updatedAt: string;
   __v?: number; 
