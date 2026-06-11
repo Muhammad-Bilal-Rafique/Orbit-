@@ -3,7 +3,9 @@
 import { OrderType, OrderStatus } from "@/types/OrderTypes";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Package, Calendar, ArrowUpRight } from "lucide-react";
+import { Package, Calendar } from "lucide-react";
+// 🔥 IMPORT THE NEW S-RANK COMPONENT
+import OrderReview from "./OrderReview"; 
 
 interface OrderHistoryCardProps {
   order: OrderType;
@@ -11,7 +13,8 @@ interface OrderHistoryCardProps {
 
 export default function OrderHistoryCard({ order }: OrderHistoryCardProps) {
   
-  const getStatusBadge = (status: OrderStatus) => {
+  // ✅ MODIFIED: Added flexible custom UI bindings inside the badge mapper generator
+  const getStatusBlock = (status: OrderStatus) => {
     switch (status) {
       case "pending":
         return <Badge className="bg-blue-500/10 text-blue-500 border-blue-500/20 shadow-none">Pending</Badge>;
@@ -38,7 +41,7 @@ export default function OrderHistoryCard({ order }: OrderHistoryCardProps) {
               <p className="font-mono font-bold mt-0.5 text-foreground">#{order._id.substring(14).toUpperCase()}</p>
             </div>
             <div className="hidden sm:block h-8 w-px bg-border" />
-            <div className="hidden sm:block">
+            <div>
               <p className="text-muted-foreground font-medium">Date Placed</p>
               <p className="font-semibold mt-0.5 text-foreground">
                 {new Date(order.createdAt).toLocaleDateString("en-PK", {
@@ -49,13 +52,14 @@ export default function OrderHistoryCard({ order }: OrderHistoryCardProps) {
               </p>
             </div>
           </div>
-          <div>{getStatusBadge(order.status as OrderStatus)}</div>
+          {/* Renders Status Badge */}
+          <div>{getStatusBlock(order.status as OrderStatus)}</div>
         </div>
 
         {/* ITEMS ITERATION BOX */}
-        <div className="space-y-3">
+        <div className="space-y-4">
           {order.items.map((item) => (
-            <div key={item._id} className="flex items-center justify-between text-sm py-1">
+            <div key={item._id} className="flex flex-col sm:flex-row sm:items-center justify-between text-sm py-2 gap-2 border-b border-border/40 last:border-0 pb-3 last:pb-0">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded bg-secondary/50 text-muted-foreground hidden sm:block">
                   <Package className="w-4 h-4" />
@@ -65,8 +69,15 @@ export default function OrderHistoryCard({ order }: OrderHistoryCardProps) {
                   <p className="text-xs text-muted-foreground mt-0.5">Quantity Vector: {item.quantity} Pcs</p>
                 </div>
               </div>
-              <div className="text-right">
+              
+              {/* ✅ ACTION ZONE: Price block plus context-aware dynamic review button toggle */}
+              <div className="flex sm:flex-col items-center sm:items-end justify-between gap-2 mt-1 sm:mt-0">
                 <p className="font-bold text-foreground">Rs. {(item.price * item.quantity).toLocaleString()}</p>
+                
+                {/* 🔥 S-RANK FEATURE GATEWAY: Button only spawns if order is delivered */}
+                {order.status === "delivered" && (
+                  <OrderReview productId={item.productId} productName={item.name} />
+                )}
               </div>
             </div>
           ))}
