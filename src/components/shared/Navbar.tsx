@@ -1,15 +1,19 @@
 "use client";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "@/assets/Logo.png";
 import { Input } from "@/components/ui/input";
-import { ShoppingCart, User, Menu, X, Search, Sparkles } from "lucide-react";
+import { ShoppingCart, Menu, X, Search, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/cartStore";
+import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import UserNav from "./user-nav"
 
 export default function Navbar() {
-  const [mounted , setMounted] = useState<boolean>(false)
+  const { data: session , status} = useSession();
+  const [mounted, setMounted] = useState<boolean>(false);
   const cartCount = useCartStore((state) => state.getTotalItems());
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -87,9 +91,21 @@ export default function Navbar() {
             )}
           </Link>
 
-          <button className="text-foreground hover:text-primary transition-colors">
-            <User className="w-5 h-5" />
-          </button>
+      <div className="flex items-center gap-4">
+    {/* ⚡ S-RANK SHIELD: Jab tak state loading mein hai, kuch mat dikhao ya ek blank spot rakho */}
+    {status === "loading" ? (
+      // Ek chota sa rounded transparent box taaki space reserve rahe aur layout jhatka na maare
+      <div className="w-9 h-9 rounded-full bg-muted/20 animate-pulse" />
+    ) : session ? (
+      // ✅ Session loaded aur user logged in hai
+      <UserNav />
+    ) : (
+      // ❌ Session loaded aur user logged in nahi hai
+      <Link href="/login">
+        <Button size="sm">Login</Button>
+      </Link>
+    )}
+  </div>
 
           {/* Mobile Menu Button */}
           <button
