@@ -6,7 +6,7 @@ export default function ProductDetailSkeleton() {
       
       {/* LEFT SIDE: Big Product Image Box Gallery Skeleton */}
       <div className="space-y-4">
-        <Skeleton className="h-[450px] md:h-[550px] w-full bg-muted/30 rounded-3xl animate-pulse" />
+        <Skeleton className="h-112 md:h-137 w-full bg-muted/30 rounded-3xl animate-pulse" />
         {/* Thumbnails grid container */}
         <div className="grid grid-cols-4 gap-4">
           {[1, 2, 3, 4].map((i) => (
