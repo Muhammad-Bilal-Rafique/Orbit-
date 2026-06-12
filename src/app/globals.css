@@ -97,7 +97,7 @@
   --sidebar-ring: hsl(240 4.9% 83.9%);
 }
 
-@theme inline {
+@theme {
   --font-sans: 'Geist', 'Geist Fallback';
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';
   --color-background: var(--background);

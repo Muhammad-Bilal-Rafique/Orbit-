@@ -9,10 +9,10 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/cartStore";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import UserNav from "./user-nav"
+import UserNav from "./user-nav";
 
 export default function Navbar() {
-  const { data: session , status} = useSession();
+  const { data: session, status } = useSession();
   const [mounted, setMounted] = useState<boolean>(false);
   const cartCount = useCartStore((state) => state.getTotalItems());
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -35,7 +35,7 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-background border-b border-border">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between gap-6">
         {/* Logo */}
-        <Link href="/" className="flex-0">
+        <Link href="/" className="flex-0" prefetch={true}>
           <div className="relative w-56 h-20">
             <Image
               src={Logo}
@@ -56,6 +56,7 @@ export default function Navbar() {
             <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/70 transition-colors group-focus-within:text-primary animate-pulse pointer-events-none" />
 
             <Input
+              id="navbar-search-input"
               placeholder="Describe your vibe (e.g., 'minimalist dark aesthetic')..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -67,13 +68,15 @@ export default function Navbar() {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-6">
           <Link
+          prefetch={true}
             href="/"
             className="text-sm font-medium text-foreground hover:text-primary transition-colors"
           >
             Home
           </Link>
           <Link
-            href="/products"
+          prefetch={true}
+            href="/users/products"
             className="text-sm font-medium text-foreground hover:text-primary transition-colors"
           >
             Products
@@ -82,7 +85,7 @@ export default function Navbar() {
 
         {/* Icons */}
         <div className="flex items-center gap-4">
-          <Link href="/users/cart" className="relative">
+          <Link href="/users/cart" prefetch={true} className="relative">
             <ShoppingCart className="w-5 h-5 text-foreground hover:text-primary transition-colors" />
             {mounted && cartCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-destructive text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -91,21 +94,19 @@ export default function Navbar() {
             )}
           </Link>
 
-      <div className="flex items-center gap-4">
-    {/* ⚡ S-RANK SHIELD: Jab tak state loading mein hai, kuch mat dikhao ya ek blank spot rakho */}
-    {status === "loading" ? (
-      // Ek chota sa rounded transparent box taaki space reserve rahe aur layout jhatka na maare
-      <div className="w-9 h-9 rounded-full bg-muted/20 animate-pulse" />
-    ) : session ? (
-      // ✅ Session loaded aur user logged in hai
-      <UserNav />
-    ) : (
-      // ❌ Session loaded aur user logged in nahi hai
-      <Link href="/login">
-        <Button size="sm">Login</Button>
-      </Link>
-    )}
-  </div>
+          <div className="flex items-center gap-4">
+            {/* ⚡ S-RANK SHIELD: Jab tak state loading mein hai, kuch mat dikhao ya ek blank spot rakho */}
+            {status === "loading" ? (
+              // Ek chota sa rounded transparent box taaki space reserve rahe aur layout jhatka na maare
+              <div className="w-9 h-9 rounded-full bg-muted/20 animate-pulse" />
+            ) : session ? (
+              <UserNav />
+            ) : (
+              <Link href="/auth/login" prefetch={true}>
+                <Button size="sm">Login</Button>
+              </Link>
+            )}
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -136,18 +137,21 @@ export default function Navbar() {
           </form>
           <div className="px-4 py-3 space-y-2">
             <Link
+            prefetch={true}
               href="/"
               className="block text-sm font-medium text-foreground hover:text-primary py-2"
             >
               Home
             </Link>
             <Link
+            prefetch={true}
               href="/products"
               className="block text-sm font-medium text-foreground hover:text-primary py-2"
             >
               Products
             </Link>
             <Link
+            prefetch={true}
               href="/users/cart"
               className="block text-sm font-medium text-foreground hover:text-primary py-2"
             >

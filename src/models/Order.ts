@@ -21,7 +21,7 @@ import mongoose, { Document, Schema } from "mongoose";
     shippingAddress: {
       fullName: string;
       street: string;
-      city: String;
+      city: string;
       state: string;
       zip: string;
       country: string;

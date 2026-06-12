@@ -1,6 +1,8 @@
 import { NextResponse, NextRequest } from "next/server";
 import Stripe from "stripe";
 import { auth } from "@/auth";
+import { Product } from "@/models/Product";
+import { connectDb } from "@/lib/connectDb";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 export async function POST(request: NextRequest) {
@@ -15,6 +17,30 @@ export async function POST(request: NextRequest) {
       );
 
     const { items, totalAmount, successUrl, cancelUrl } = await request.json();
+
+    await connectDb();
+
+    for (const item of items) {
+      const targetId = item.productId
+      const dbProduct = await Product.findById(targetId);
+
+      if (!dbProduct) {
+        return NextResponse.json(
+          { message: `Product "${item.name}" no longer exists in our store.` },
+          { status: 400 },
+        );
+      }
+
+      if (dbProduct.stock < item.quantity) {
+        return NextResponse.json(
+          {
+            message: `Insufficient stock for "${item.name}". Only ${dbProduct.stock} items left, but you have ${item.quantity} in your cart.`,
+          },
+          { status: 400 },
+        );
+      }
+    }
+
     const lineItems = items.map((item: any) => ({
       price_data: {
         currency: "usd",

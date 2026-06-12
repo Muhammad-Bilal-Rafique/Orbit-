@@ -1,25 +1,24 @@
 import ProductCard from "@/components/users-products/ProductCard";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {ProductTypes} from "@/types/ProductTypes"
+import { ProductTypes } from "@/types/ProductTypes";
+import {connectDb}  from "@/lib/connectDb"; 
+import { Product } from "@/models/Product"; 
 
-
-const getFeaturedProducts = async () => {
-  try{
-    const res = await fetch('http://localhost:3000/api/user/getFeatured')
-    const data = await res.json()
-    return data.products
+const getFeaturedProducts = async (): Promise<ProductTypes[]> => {
+  try {
+    await connectDb(); 
+    const products = await Product.find({ isFeatured: true }).lean();
+    return JSON.parse(JSON.stringify(products));
   } catch (error) {
-    if (error) {
-      console.log(error)
+    console.error("Direct DB fetch error on homepage featured feed:", error);
+    return [];
   }
-  }
-}
+};
 
-const featured : ProductTypes[] = await getFeaturedProducts()
-
-export default function FeaturedProducts() {
-
+export default async function FeaturedProducts() {
+  const featured: ProductTypes[] = await getFeaturedProducts();
+  
   return (
     <section className="bg-background py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-4">

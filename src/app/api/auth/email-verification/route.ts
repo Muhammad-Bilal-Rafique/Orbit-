@@ -3,7 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { User } from "@/models/User";
 import { connectDb } from "@/lib/connectDb";
 
-let code: string = Math.floor(100000 + Math.random() * 900000).toString();
+const code: string = Math.floor(100000 + Math.random() * 900000).toString();
 
 const htmlforEmail = `
 <div style="background:#ffffff;padding:2rem 1rem;font-family: 'Inter', sans-serif;">

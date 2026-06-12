@@ -3,12 +3,22 @@ import FeaturedProducts from "@/components/home/FeaturedProducts";
 import CategoriesSection from "@/components/home/CategoriesSection";
 import TrustBadges from "@/components/home/TrustBadges";
 import NewsletterSignup from "@/components/home/NewsletterSignup";
+import {Suspense} from "react"
+import ProductsSkeleton from "@/components/skeletons/products-skeleton"
+import type {Metadata} from "next"
+
+export const metadata: Metadata = {
+  title: "Orbit | Curated High-End Tech & Minimalist Gear",
+  description: "Explore Orbit's ultra-clean collection of luxury hardware and architectural minimalist design accessories. Experience next-generation ecommerce.",
+};
 
 export default function HomePage() {
   return (
     <main>
       <HeroSection />
+      <Suspense fallback={<ProductsSkeleton />}>
       <FeaturedProducts />
+      </Suspense>
       <CategoriesSection />
       <TrustBadges />
       <NewsletterSignup />

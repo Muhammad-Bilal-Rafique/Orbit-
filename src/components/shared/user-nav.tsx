@@ -81,7 +81,7 @@ export default function UserNav() {
           <button
             onClick={() => {
               setIsOpen(false);
-              signOut({ callbackUrl: "/" });
+              signOut({ callbackUrl: "/users/home" });
             }}
             type="button"
             className="w-full flex items-center gap-2 rounded-sm px-3 py-2 text-sm text-destructive font-medium hover:bg-destructive/10 transition-colors text-left cursor-pointer"
