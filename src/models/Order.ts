@@ -9,6 +9,8 @@ import mongoose, { Document, Schema } from "mongoose";
     name: string;
     price: number;
     quantity: number;
+    color: string;
+    size:string
   }[];
   totalAmount: number;
   status:
@@ -41,6 +43,8 @@ const OrderSchema: Schema = new Schema(
         name: String,
         price: Number,
         quantity: Number,
+        color: String,
+        size: String
       },
     ],
     totalAmount: { type: Number, required: true },

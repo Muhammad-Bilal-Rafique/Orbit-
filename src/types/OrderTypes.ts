@@ -4,6 +4,8 @@ export interface OrderItem {
   price: number;
   quantity: number;
   _id: string;
+  color: string;
+  size: string;
 }
 
 export interface ShippingAddress {

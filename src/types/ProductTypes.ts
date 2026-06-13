@@ -1,23 +1,29 @@
+export type AttributeType = {
+  name: string;
+  values: string[];
+};
+
+export type VariantType = {
+  combination: {
+    Color?: string;
+    Size?: string;
+    [key: string]: string | undefined; 
+  };
+  price: number;
+  stock: number;
+};
+
 export type ProductTypes = {
   _id: string;
   name: string;
   description: string;
-  price: number;
+  price: number; 
   imageUrl: string;
   category: string;
-  stock: number;
   keywords: string[];
   isFeatured: boolean;
+  attributes: AttributeType[]; 
+  variants: VariantType[];     
 };
 
-export type ProductAdminTypes = {
-  name: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  category: string;
-  stock: number;
-  keywords: string[];
-  isFeatured: boolean;
-
-}
+export type ProductAdminTypes = Omit<ProductTypes, "_id" | "attributes" | "variants">;

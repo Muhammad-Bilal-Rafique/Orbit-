@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     await connectDb();
 
     for (const item of items) {
-      const targetId = item.productId
+      const targetId = item.productId;
       const dbProduct = await Product.findById(targetId);
 
       if (!dbProduct) {
@@ -31,10 +31,33 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      if (dbProduct.stock < item.quantity) {
+     
+      const matchingVariant = dbProduct.variants.find((v: any) => {
+        const vColor =
+          typeof v.combination.get === "function"
+            ? v.combination.get("Color")
+            : v.combination.Color;
+        const vSize =
+          typeof v.combination.get === "function"
+            ? v.combination.get("Size")
+            : v.combination.Size;
+
+        return vColor === item.color && vSize === item.size;
+      });
+
+      if (!matchingVariant) {
         return NextResponse.json(
           {
-            message: `Insufficient stock for "${item.name}". Only ${dbProduct.stock} items left, but you have ${item.quantity} in your cart.`,
+            message: `The combination ${item.color} / ${item.size} for "${item.name}" is no longer available.`,
+          },
+          { status: 400 },
+        );
+      }
+
+      if (matchingVariant.stock < item.quantity) {
+        return NextResponse.json(
+          {
+            message: `Insufficient stock for "${item.name}" (${item.color} / ${item.size}). Only ${matchingVariant.stock} items left, but you have ${item.quantity} in your cart.`,
           },
           { status: 400 },
         );

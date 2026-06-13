@@ -23,29 +23,29 @@ export const sendOrderEmail = async (
     if (type === "recieved") {
       subject = `📦 Orbit Order Confirmed! — #${orderId.toUpperCase()}`;
       htmlContent = `
-  <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; background: #0f172a; color: #f8fafc; border-radius: 12px;">
-    <h2 style="color: #38bdf8; text-align: center;">🎉 Your Orbit Order is Confirmed!</h2>
+  <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; background: #ffffff; color: #0a0e27; border-radius: 12px;">
+    <h2 style="color: #1e293b; text-align: center;">🎉 Your Orbit Order is Confirmed!</h2>
     
-    <p style="font-size: 15px; line-height: 1.6;">
+    <p style="font-size: 15px; line-height: 1.6; color: #334155;">
       Congratulations! Your order has been received and confirmed. Your payment went through successfully, and we're now preparing your items for shipment.
     </p>
 
-    <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #38bdf8;">
-      <p style="margin: 8px 0;"><strong>Order ID:</strong> #${orderId}</p>
-      <p style="margin: 8px 0;"><strong>Total Amount Paid:</strong> $${totalAmount}</p>
-      <p style="margin: 8px 0; color: #4ade80;"><strong>Status:</strong> Order Confirmed ✓</p>
+    <div style="background: #f5f5f7; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #1e293b;">
+      <p style="margin: 8px 0; color: #0a0e27;"><strong>Order ID:</strong> #${orderId}</p>
+      <p style="margin: 8px 0; color: #0a0e27;"><strong>Total Amount Paid:</strong> $${totalAmount}</p>
+      <p style="margin: 8px 0; color: #16a34a;"><strong>Status:</strong> Order Confirmed ✓</p>
     </div>
 
-    <h3 style="color: #38bdf8; font-size: 14px; margin-top: 20px; margin-bottom: 10px;">YOUR ITEMS</h3>
-    <ul style="background: #1e293b; padding: 12px; border-radius: 8px; margin: 0;">
-      ${items.map((item) => `<li style="margin: 8px 0; font-size: 14px;">${item.name} (x${item.quantity}) — $${item.price}</li>`).join("")}
+    <h3 style="color: #1e293b; font-size: 14px; margin-top: 20px; margin-bottom: 10px;">YOUR ITEMS</h3>
+    <ul style="background: #f5f5f7; padding: 12px; border-radius: 8px; margin: 0;">
+      ${items.map((item) => `<li style="margin: 8px 0; font-size: 14px; color: #334155;">${item.name} (x${item.quantity}) — $${item.price}</li>`).join("")}
     </ul>
 
-    <p style="font-size: 14px; line-height: 1.6; margin-top: 20px; color: #cbd5e1;">
+    <p style="font-size: 14px; line-height: 1.6; margin-top: 20px; color: #475569;">
       Your order is being packed with care. You'll receive a shipping notification with tracking details soon.
     </p>
 
-    <hr style="border: none; border-top: 1px solid #334155; margin: 20px 0;" />
+    <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
 
     <p style="font-size: 12px; color: #64748b; text-align: center; margin: 0;">
       Orbit Ecosystem — Curated High-End Tech<br>
@@ -58,29 +58,29 @@ export const sendOrderEmail = async (
     else if (type === "confirmed") {
       subject = `📦 Your Orbit Order Confirmed! — #${orderId.toUpperCase()}`;
       htmlContent = `
-  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: auto; padding: 20px; background: #0f172a; color: #f8fafc; border-radius: 12px;">
-    <h2 style="color: #38bdf8; text-align: center; margin-top: 0;">Order Confirmed ✓</h2>
+  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: auto; padding: 20px; background: #ffffff; color: #0a0e27; border-radius: 12px;">
+    <h2 style="color: #1e293b; text-align: center; margin-top: 0;">📦 Order Shipped ✓</h2>
     
-    <p style="font-size: 15px; line-height: 1.6;">
+    <p style="font-size: 15px; line-height: 1.6; color: #334155;">
       Hi there,<br><br>
-      Thanks for your order! We've received your payment and your order is now confirmed. Your items will be carefully packed and shipped soon.
+      Great news! Your order is on its way. We've packed your items with care and they're now in transit to your address. You can track your shipment anytime from your account.
     </p>
 
-    <div style="background: #1e293b; padding: 15px; border-radius: 8px; margin: 20px 0;">
-      <p style="margin: 8px 0;"><strong>Order ID:</strong> #${orderId}</p>
-      <p style="margin: 8px 0;"><strong>Amount Paid:</strong> $${totalAmount}</p>
+    <div style="background: #f5f5f7; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #1e293b;">
+      <p style="margin: 8px 0; color: #0a0e27;"><strong>Order ID:</strong> #${orderId}</p>
+      <p style="margin: 8px 0; color: #0a0e27;"><strong>Status:</strong> <span style="color: #16a34a;">Processing</span></p>
     </div>
 
-    <h3 style="color: #38bdf8; font-size: 14px; margin-top: 20px; margin-bottom: 10px;">YOUR ITEMS</h3>
-    <div style="background: #1e293b; padding: 12px; border-radius: 8px;">
-      ${items.map((item) => `<p style="margin: 8px 0; font-size: 14px;">${item.name} <strong>×${item.quantity}</strong> — $${item.price}</p>`).join("")}
+    <h3 style="color: #1e293b; font-size: 14px; margin-top: 20px; margin-bottom: 10px;">TRACKING INFORMATION</h3>
+    <div style="background: #f5f5f7; padding: 12px; border-radius: 8px;">
+      <p style="margin: 8px 0; font-size: 14px; color: #334155;">Your tracking details will be available in your account dashboard. Check for updates anytime.</p>
     </div>
 
-    <p style="font-size: 14px; line-height: 1.6; margin-top: 20px; color: #cbd5e1;">
-      We'll send you a shipping update as soon as your order leaves our warehouse. You can track your order anytime from your account.
+    <p style="font-size: 14px; line-height: 1.6; margin-top: 20px; color: #475569;">
+      Estimated delivery depends on your location. Most orders arrive within 5-7 business days. Keep an eye on your inbox for delivery notifications.
     </p>
 
-    <hr style="border: none; border-top: 1px solid #334155; margin: 20px 0;" />
+    <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
 
     <p style="font-size: 12px; color: #64748b; text-align: center; margin: 0;">
       Orbit — Premium Tech Products<br>
@@ -97,8 +97,6 @@ export const sendOrderEmail = async (
       subject: subject,
       html: htmlContent,
     });
-
-    console.log(` Resend: ${type} email dispatched successfully to ${email}`);
   } catch (error) {
     console.error(" Resend email dispatch crash:", error);
   }

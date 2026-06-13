@@ -47,6 +47,8 @@ export async function POST(request: NextRequest) {
         ? JSON.parse((fullSession as any).metadata.items)
         : [];
 
+        console.log("These are the order Items ", orderItems)
+
       const order = new Order({
         userId: (fullSession as any).metadata?.userId || "GUEST_USER",
         userEmail: (fullSession as any).metadata?.userEmail,
@@ -68,18 +70,27 @@ export async function POST(request: NextRequest) {
 
       await order.save();
 
-       await sendOrderEmail("confirmed", {
+      await sendOrderEmail("confirmed", {
         email: (fullSession as any).metadata?.userEmail,
         orderId: order._id.toString(),
         totalAmount: order.totalAmount,
-        items: orderItems
+        items: orderItems,
       });
 
+      
+   
       for (const item of orderItems) {
-        const targetId = item.productId || item._id || item.id;
-        await Product.findByIdAndUpdate(targetId, {
-          $inc: { stock: -item.quantity },
-        });
+        const targetId = item.productId 
+        await Product.updateOne(
+          {
+            _id: targetId,
+            "variants.combination.Color": item.color,
+            "variants.combination.Size": item.size,
+          },
+          {
+            $inc: { "variants.$.stock": -item.quantity },
+          },
+        );
       }
     }
     return NextResponse.json({ received: true }, { status: 200 });
