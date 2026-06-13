@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import { connectDb } from "@/lib/connectDb";
 import { Order } from "@/models/Order";
 import { Product } from "@/models/Product";
+import { sendOrderEmail } from "@/lib/email";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -35,22 +36,28 @@ export async function POST(request: NextRequest) {
 
       await connectDb();
 
-      const shippingDetails = session.shipping_details || {};
-      const shippingAddress = shippingDetails.address || {};
+      const fullSession = await stripe.checkout.sessions.retrieve(session.id);
 
-      const orderItems = session.metadata?.items
-        ? JSON.parse(session.metadata.items)
+      const shippingData =
+        (fullSession as any).collected_information?.shipping_details || {};
+      const shippingAddress = shippingData.address || {};
+      const shippingName = shippingData.name || "Customer Name";
+
+      const orderItems = (fullSession as any).metadata?.items
+        ? JSON.parse((fullSession as any).metadata.items)
         : [];
 
       const order = new Order({
-        userId: session.metadata?.userId || "GUEST_USER", // Safe fallback shield
-        userEmail: session.metadata?.userEmail,
-        items: orderItems, // ✅ Reused parsed object clean stream
-        totalAmount: parseFloat(session.metadata?.totalAmount || "0"),
-        status: "processing",
-        stripeSessionId: session.id,
+        userId: (fullSession as any).metadata?.userId || "GUEST_USER",
+        userEmail: (fullSession as any).metadata?.userEmail,
+        items: orderItems,
+        totalAmount: parseFloat(
+          (fullSession as any).metadata?.totalAmount || "0",
+        ),
+        status: "pending",
+        stripeSessionId: fullSession.id,
         shippingAddress: {
-          fullName: shippingDetails.name || "Customer Name",
+          fullName: shippingName,
           street: shippingAddress.line1 || "",
           city: shippingAddress.city || "",
           state: shippingAddress.state || "",
@@ -59,24 +66,22 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Save Order document to MongoDB Cluster
       await order.save();
 
-      // 🔄 Atomic Inventory Sync Node Loop
+       await sendOrderEmail("confirmed", {
+        email: (fullSession as any).metadata?.userEmail,
+        orderId: order._id.toString(),
+        totalAmount: order.totalAmount,
+        items: orderItems
+      });
+
       for (const item of orderItems) {
         const targetId = item.productId || item._id || item.id;
-        
-        await Product.findByIdAndUpdate(
-          targetId,
-          { 
-            $inc: { stock: -item.quantity } 
-          }
-        );
+        await Product.findByIdAndUpdate(targetId, {
+          $inc: { stock: -item.quantity },
+        });
       }
-      
-      console.log(`⚡ Inventory decremented and Order synced safely for: ${session.id}`);
     }
-
     return NextResponse.json({ received: true }, { status: 200 });
   } catch (error) {
     console.error("Webhook operation system crash:", error);
