@@ -1,38 +1,74 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 import { connectDb } from "@/lib/connectDb";
 import { Product } from "@/models/Product";
 
 export async function PUT(request: NextRequest) {
   try {
-    const {
-      _id,
-      name,
-      description,
-      price,
-      stock,
-      category,
-      keywords,
-      isFeatured,
-    } = await request.json();
-    await connectDb();
-    const product = await Product.findById(_id);
-    if (!product) {
+    // 1. Secure Shield Admin Check Layer
+    const token = await getToken({
+      req: request,
+      secret: process.env.AUTH_SECRET,
+    });
+
+    // if (!token || token.role !== "admin") {
+    //   return NextResponse.json(
+    //     { message: "Unauthorized access path." },
+    //     { status: 401 }
+    //   );
+    // }
+
+    // 2. Extract Data Tree
+    const body = await request.json();
+    const { _id, name, description, price, category, keywords, isFeatured, variants } = body;
+
+    if (!_id || !name || !description || !price || !category) {
       return NextResponse.json(
-        { message: "Product not found" },
-        { status: 404 },
+        { message: "Required operational primitive constraints missing." },
+        { status: 400 }
       );
     }
-    product.name = name;
-    product.description = description;
-    product.price = price;
-    product.stock = stock;
-    product.category = category;
-    product.keywords = keywords;
-    product.isFeatured = isFeatured;
-    await product.save();
-    return NextResponse.json({ product }, { status: 200 });
-  } catch (error) {
-    console.log(error);
-    return NextResponse.json({ error }, { status: 500 });
+
+    await connectDb();
+
+    // 3. Atomically Update Full Document Structure
+    const updatedProduct = await Product.findByIdAndUpdate(
+      _id,
+      {
+        $set: {
+          name,
+          description,
+          price: Number(price),
+          category,
+          keywords, 
+          isFeatured: Boolean(isFeatured),
+          variants, 
+        },
+      },
+      { new: true, runValidators: true } 
+    );
+
+    if (!updatedProduct) {
+      return NextResponse.json(
+        { message: "Product asset target matching id not found." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Inventory matrix sync node updated successfully.",
+        product: updatedProduct,
+      },
+      { status: 200 }
+    );
+
+  } catch (error: any) {
+    console.error("Edit product pipeline processing crash trace:", error);
+    return NextResponse.json(
+      { message: "Failed to resolve product data mutation matrix.", error: error.message },
+      { status: 500 }
+    );
   }
 }
