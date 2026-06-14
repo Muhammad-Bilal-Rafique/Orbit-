@@ -17,7 +17,6 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
 
-  // 🗺️ LOCKED INDUSTRIAL LINKS MATRIX (Row-Wise Mapping)
   const navLinks = [
     {
       name: "Dashboard",
@@ -44,13 +43,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans antialiased">
       
-      {/* 🛸 1. TOP SECURE IDENTITY BAR */}
+      {/*  1. TOP SECURE IDENTITY BAR */}
       <header className="w-full border-b border-border bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           
           {/* Brand Identity Vector */}
           <div className="flex items-center gap-2.5">
-            <span className="h-6 w-6 bg-primary text-primary-foreground font-black text-xs flex items-center justify-center rounded-[4px] tracking-tighter">
+            <span className="h-6 w-6 bg-primary text-primary-foreground font-black text-xs flex items-center justify-center rounded-lg tracking-tighter">
               Ω
             </span>
             <span className="text-sm font-semibold tracking-wider uppercase text-primary">
@@ -68,8 +67,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
       </header>
 
-      {/* 🧭 2. HORIZONTAL ROW-WISE NAVIGATION TRACK */}
-      <div className="w-full border-b border-border/60 bg-background sticky top-0 z-40 backdrop-blur-md bg-background/80">
+      {/*  2. HORIZONTAL ROW-WISE NAVIGATION TRACK */}
+      <div className="w-full border-b border-border/60 top-0 z-40 backdrop-blur-md bg-background/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex items-center gap-1 h-12 overflow-x-auto no-scrollbar">
             {navLinks.map((link) => {
@@ -95,14 +94,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
       </div>
 
-      {/* 📦 3. FULL-WIDTH EXECUTIVE WORKSPACE BLOCK */}
+      {/*  3. FULL-WIDTH EXECUTIVE WORKSPACE BLOCK */}
       <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex-1 py-8">
         <div className="w-full bg-card/20 border border-border/40 rounded-lg p-6 shadow-2xs min-h-[60vh]">
           {children}
         </div>
       </main>
 
-      {/* 🏁 4. HIGH-END SIMPLE FOOTER */}
+      {/* 4. HIGH-END SIMPLE FOOTER */}
       <footer className="w-full border-t border-border/50 bg-card/30 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between text-[10px] font-medium tracking-wider text-muted-foreground uppercase">
           <span>Orbit Operational Hub v2.1.0</span>

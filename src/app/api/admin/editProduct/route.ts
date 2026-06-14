@@ -45,7 +45,7 @@ export async function PUT(request: NextRequest) {
           variants, 
         },
       },
-      { new: true, runValidators: true } 
+      { returnDocument: "after", runValidators: true } 
     );
 
     if (!updatedProduct) {

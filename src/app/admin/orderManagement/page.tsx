@@ -1,22 +1,36 @@
-import { OrderType } from "@/types/OrderTypes"
-import OrdersPage from "@/components/admin/Orders/ordersPage" 
+import OrdersPage from "@/components/admin/Orders/ordersPage";
+import { Order } from "@/models/Order";
+import { connectDb } from "@/lib/connectDb";
+import { OrderType } from "@/types/OrderTypes";
+import type { Metadata } from "next";
 
-const fetchOrders = async (): Promise<OrderType[]> => {
+
+export const metadata: Metadata = {
+  title: "Order Management | Orbit",
+  description: "Track active shipments, inspect past invoice statements, and manage your personal purchase history manifest in real-time.",
+};
+
+const getOrdersDirect = async (): Promise<OrderType[]> => {
   try {
-    const res = await fetch("http://localhost:3000/api/admin/getOrders", { cache: "no-store" })
-    const data = await res.json()
-    return data.orders || []
+    await connectDb();
+    
+    
+    const orders = await Order.find({})
+      .sort({ createdAt: -1 })
+      .lean();
+    
+    if (!orders) return [];
+
+    
+    return JSON.parse(JSON.stringify(orders));
   } catch (error) {
-    console.log("Error fetching orders:", error)
-    return []
+    console.error(" Direct Database fetch failed for admin orders:", error);
+    return [];
   }
-}
+};
 
-const OrderPage = async () => {
-  const orders = await fetchOrders()
+export default async function AdminOrderPage() {
   
-  // Clean pass to client component
-  return <OrdersPage initialOrders={orders} />
+  const orders = await getOrdersDirect();
+  return <OrdersPage initialOrders={orders} />;
 }
-
-export default OrderPage
