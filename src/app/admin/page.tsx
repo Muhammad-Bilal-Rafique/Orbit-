@@ -59,7 +59,7 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
   const rawOrders = await getDashboardDataTracer(fromDate, toDate);
 
   return (
-   <div className="space-y-8 font-sans p-6 bg-background">
+   <div className="space-y-8 font-sans bg-background">
       
       {/* SECTION HEADER BLOCK */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border/40 pb-4">
