@@ -90,7 +90,7 @@ export default function OrdersTable({
                 Customer
               </TableHead>
               {/* Increased layout span space to handle detail specs inline */}
-              <TableHead className="font-bold text-[10px] uppercase tracking-wider w-[280px]">
+              <TableHead className="font-bold text-[10px] uppercase tracking-wider w-70">
                 Items & Styles
               </TableHead>
               <TableHead className="font-bold text-[10px] uppercase tracking-wider">
@@ -133,11 +133,11 @@ export default function OrdersTable({
                     })}
                   </TableCell>
 
-                  <TableCell className="text-xs font-medium text-foreground max-w-[150px] truncate">
+                  <TableCell className="text-xs font-medium text-foreground max-w-37 truncate">
                     {order.userEmail}
                   </TableCell>
 
-                  {/* 🔥 INJECTED: SYMMETRICAL COMPACT VARIANTS PREVIEW BAR */}
+                  {/* VARIANTS PREVIEW BAR */}
                   <TableCell>
                     <div className="space-y-1.5 py-1">
                       {order.items?.map((item: any, i) => (
@@ -145,7 +145,7 @@ export default function OrdersTable({
                           key={item._id || i}
                           className="text-xs flex items-center gap-1.5 flex-wrap"
                         >
-                          <span className="font-medium text-foreground truncate max-w-[140px] block">
+                          <span className="font-medium text-foreground truncate max-w-35 block">
                             {item.name}
                           </span>
                           <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-tight px-1 bg-secondary border border-border/60 rounded-[3px]">

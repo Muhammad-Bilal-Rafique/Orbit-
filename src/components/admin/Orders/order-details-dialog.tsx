@@ -33,7 +33,7 @@ export default function OrderDetailsDialog({ order, isOpen, onOpenChange }: Orde
             </div>
             <div>
               <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1.5">Shipping Address</h4>
-              <p className="text-xs text-muted-foreground leading-relaxed break-words">{order.shippingAddress?.street}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed wrap-break-word">{order.shippingAddress?.street}</p>
               <p className="text-xs font-medium mt-1 text-foreground">
                 {order.shippingAddress?.city}, {order.shippingAddress?.zip} | {order.shippingAddress?.country}
               </p>
