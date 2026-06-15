@@ -1,7 +1,6 @@
-import { Suspense, cache } from "react"; 
+import { cache } from "react"; 
 import { notFound } from "next/navigation";
 import ProductDetailClient from "@/components/users-products/ProductDetailClient";
-import ProductDetailSkeleton from "@/components/skeletons/product-detail-skeleton"; 
 import { ProductTypes } from "@/types/ProductTypes";
 import { connectDb } from "@/lib/connectDb";
 import { Product } from "@/models/Product";
@@ -10,7 +9,6 @@ import type { Metadata } from "next";
 interface Props {
   params: Promise<{ id: string }>;
 }
-
 
 const getSingleProduct = cache(async (id: string): Promise<ProductTypes | null> => {
   try {
@@ -25,7 +23,6 @@ const getSingleProduct = cache(async (id: string): Promise<ProductTypes | null> 
     return null;
   }
 });
-
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
@@ -44,24 +41,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-async function ProductDetailFeed({ id }: { id: string }) {
+
+export default async function ProductDetailPage({ params }: Props) {
+  const { id } = await params;
+  
+  // Direct synchronized fetch
   const product = await getSingleProduct(id); 
+  
   if (!product) {
     notFound(); 
   }
 
-  return <ProductDetailClient product={product} />;
-}
-
-
-export default async function ProductDetailPage({ params }: Props) {
-  const { id } = await params;
-
   return (
     <div className="w-full min-h-screen bg-background">
-      <Suspense fallback={<ProductDetailSkeleton />}>
-        <ProductDetailFeed id={id} />
-      </Suspense>
+      <ProductDetailClient product={product} />
     </div>
   );
 }

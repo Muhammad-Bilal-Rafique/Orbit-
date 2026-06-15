@@ -3,8 +3,6 @@ import FeaturedProducts from "@/components/home/FeaturedProducts";
 import CategoriesSection from "@/components/home/CategoriesSection";
 import TrustBadges from "@/components/home/TrustBadges";
 import NewsletterSignup from "@/components/home/NewsletterSignup";
-import {Suspense} from "react"
-import ProductsSkeleton from "@/components/skeletons/products-skeleton"
 import type {Metadata} from "next"
 import { getActiveWishlistIdsAction } from "@/app/actions/wishlist";
 
@@ -19,9 +17,7 @@ export default async function HomePage() {
   return (
     <main>
       <HeroSection />
-      <Suspense fallback={<ProductsSkeleton />}>
       <FeaturedProducts initialWishlistIds={wishlistIds}/>
-      </Suspense>
       <CategoriesSection />
       <TrustBadges />
       <NewsletterSignup />
