@@ -7,13 +7,14 @@ interface ProductGridProps {
   products: ProductTypes[];
   totalProducts: number;
   onClearFilters: () => void;
+  initialWishlistIds?: string[];
 }
-
 
 export default function ProductGrid({
   products,
   totalProducts,
   onClearFilters,
+  initialWishlistIds = [],
 }: ProductGridProps) {
   if (products.length === 0) {
     return (
@@ -39,9 +40,17 @@ export default function ProductGrid({
         Showing {products.length} of {totalProducts} products
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {products.map((product) => (
-          <ProductCard key={product._id} {...product} />
-        ))}
+        {products.map((product) => {
+          const isInitiallyWishlisted: boolean = initialWishlistIds.includes(product._id);
+
+          return (
+            <ProductCard 
+              key={product._id} 
+              {...product} 
+              isInitiallyWishlisted={isInitiallyWishlisted}
+            />
+          );
+        })}
       </div>
     </div>
   );

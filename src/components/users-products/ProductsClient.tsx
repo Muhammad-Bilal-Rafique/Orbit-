@@ -4,7 +4,13 @@ import FilterSidebar, { PRICE_RANGES } from "./FilterSidebar";
 import ProductGrid from "./ProductGrid";
 import {ProductTypes} from "@/types/ProductTypes"
 
-export default function ProductsClient({products}: {products: ProductTypes[]}) {
+export default function ProductsClient({
+  products,
+  initialWishlistIds = []
+}: {
+  products: ProductTypes[];
+  initialWishlistIds?: string[];
+}) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedPriceRange, setSelectedPriceRange] = useState(0);
@@ -70,6 +76,7 @@ export default function ProductsClient({products}: {products: ProductTypes[]}) {
             products={filteredProducts}
             totalProducts={products.length}
             onClearFilters={handleClearFilters}
+            initialWishlistIds = {initialWishlistIds}
           />
         </div>
       </div>
