@@ -65,7 +65,7 @@ export default function UserNav() {
             </Link>
 
             <Link
-              href="/profile/wishlist"
+              href="/users/profile/wishlist"
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-2 rounded-sm px-3 py-2 text-sm text-foreground hover:bg-secondary/80 transition-colors cursor-pointer"
             >

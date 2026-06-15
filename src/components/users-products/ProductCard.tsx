@@ -10,7 +10,8 @@ type ProductCardProps = Pick<
   ProductTypes,
   "_id" | "name" | "category" | "price" | "imageUrl" | "variants"
 > & {
-  isInitiallyWishlisted: boolean; 
+  isInitiallyWishlisted: boolean;
+  isWishlistPage?: boolean;
 };
 
 export default function ProductCard({
@@ -21,13 +22,15 @@ export default function ProductCard({
   imageUrl,
   variants = [],
   isInitiallyWishlisted,
+  isWishlistPage = false,
 }: ProductCardProps) {
   const totalCombinedStock = variants.reduce(
     (sum, variant) => sum + (variant.stock || 0),
     0,
   );
 
-  if (variants.length > 0 && totalCombinedStock === 0) {
+  if (variants.length === 0) return null;
+  if (variants.length > 0 && totalCombinedStock === 0 && !isWishlistPage) {
     return null;
   }
 
@@ -110,7 +113,11 @@ export default function ProductCard({
           </div>
 
           <div className="h-6 flex items-center">
-            {totalCombinedStock <= 10 ? (
+            {totalCombinedStock === 0 ? (
+              <span className="text-[9px] uppercase tracking-widest font-bold text-red-600 bg-red-500/5 px-2 py-1 rounded-sm border border-red-500/15">
+                Out of Stock
+              </span>
+            ) : totalCombinedStock <= 10 ? (
               <span className="text-[9px] uppercase tracking-widest font-bold text-amber-600 bg-amber-500/5 px-2 py-1 rounded-sm border border-amber-500/15 animate-pulse">
                 A Few Remaining
               </span>
