@@ -1,16 +1,17 @@
-import { cache } from "react"; 
 import { notFound } from "next/navigation";
 import ProductDetailClient from "@/components/users-products/ProductDetailClient";
 import { ProductTypes } from "@/types/ProductTypes";
 import { connectDb } from "@/lib/connectDb";
 import { Product } from "@/models/Product";
 import type { Metadata } from "next";
+import Reviews from "@/components/users-products/Reviews";
+
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-const getSingleProduct = cache(async (id: string): Promise<ProductTypes | null> => {
+const getSingleProduct = (async (id: string): Promise<ProductTypes | null> => {
   try {
     await connectDb();
     const product = await Product.findById(id).lean();
@@ -55,6 +56,7 @@ export default async function ProductDetailPage({ params }: Props) {
   return (
     <div className="w-full min-h-screen bg-background">
       <ProductDetailClient product={product} />
+      <Reviews productId={id} aiSummaryFromDb={product.aiSummary} />
     </div>
   );
 }

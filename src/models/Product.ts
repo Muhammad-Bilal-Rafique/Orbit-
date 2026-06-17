@@ -21,6 +21,8 @@ export interface IProduct extends Document {
   isFeatured: boolean;
   attributes: IAttribute[];
   variants: IVariant[];
+  aiSummary: string
+  aiSummaryUpdatedAt: Date
 }
 
 
@@ -33,6 +35,8 @@ const ProductSchema: Schema = new Schema(
     category: { type: String, required: true },
     keywords: { type: [String], required: true },
     isFeatured: { type: Boolean, default: false },
+    aiSummary: { type: String , default:"" },
+    aiSummaryUpdatedAt: { type: Date },
     
     attributes: [
       {

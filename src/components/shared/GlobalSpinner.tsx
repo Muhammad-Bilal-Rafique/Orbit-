@@ -1,25 +1,23 @@
 import { Loader2 } from "lucide-react";
 
-export default function GlobalSpinner() {
+export default function Loading() {
   return (
-    <div className="fixed inset-0 z-9999 flex flex-col items-center justify-center bg-background/60 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-9999 flex items-center justify-center bg-background/40 backdrop-blur-md animate-in fade-in duration-200">
       
-      {/* Reusable Minimalist Container */}
-      <div className="flex flex-col items-center space-y-3 p-6 rounded-2xl border border-border/50 bg-card shadow-lg max-w-xs text-center">
+      {/* 🔮 Unique Double-Ring Animated Dynamic Layer */}
+      <div className="relative flex items-center justify-center">
         
-        {/* Animated Smooth Spinner */}
-        <div className="relative flex items-center justify-center">
-          <Loader2 className="h-9 w-9 text-primary animate-spin" />
-        </div>
-
-        {/* Meaningful & Simple Context Feedback */}
-        <div className="space-y-0.5">
-          <h3 className="text-sm font-semibold tracking-tight text-foreground">
-            Please wait
-          </h3>
-        </div>
-
+        {/* Outer Pulsing Aura Ring */}
+        <div className="absolute h-16 w-16 rounded-full border border-primary/20 animate-ping duration-1000" />
+        
+        {/* Secondary Counter-Rotating Border Track */}
+        <div className="absolute h-12 w-12 rounded-full border-2 border-border border-t-primary/40 animate-spin animation-duration:[1.5s]" />
+        
+        {/* Core Lucide Spinner Component */}
+        <Loader2 className="h-7 w-7 text-primary animate-spin animation-duration:[0.8s] relative z-10" />
+        
       </div>
+
     </div>
   );
 }

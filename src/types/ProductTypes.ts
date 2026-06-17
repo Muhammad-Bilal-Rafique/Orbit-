@@ -23,7 +23,9 @@ export type ProductTypes = {
   keywords: string[];
   isFeatured: boolean;
   attributes: AttributeType[]; 
-  variants: VariantType[];     
+  variants: VariantType[];    
+  aiSummary: string;
+  aiSummaryUpdatedAt: Date; 
 };
 
 export type ProductAdminTypes = Omit<ProductTypes, "_id" | "attributes" | "variants">;
