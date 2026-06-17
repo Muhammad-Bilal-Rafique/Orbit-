@@ -23,7 +23,6 @@ interface ReviewsProps {
 }
 
 export default function Reviews({ productId, aiSummaryFromDb }: ReviewsProps) {
-  console.log("AI summary from DB:", aiSummaryFromDb);
   const [reviews, setReviews] = useState<ReviewNode[]>([]);
   const [loading, setLoading] = useState(true);
 

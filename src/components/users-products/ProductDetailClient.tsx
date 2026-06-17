@@ -3,7 +3,7 @@ import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Heart, ShoppingBag, Info, ChevronLeft } from "lucide-react";
+import { ShoppingBag, Info, ChevronLeft } from "lucide-react";
 import { useCartStore } from "@/lib/cartStore";
 import { ProductTypes } from "@/types/ProductTypes";
 
@@ -28,7 +28,7 @@ export default function ProductDetailClient({
     sizeAttr?.values[0] || "",
   );
 
-  // 🔄 3. DYNAMIC VARIANT MATCH INTERCEPTOR ENGINE
+  // 3. DYNAMIC VARIANT MATCH INTERCEPTOR ENGINE
   const activeVariant = useMemo(() => {
     if (!product.variants) return null;
     return product.variants.find(
@@ -190,14 +190,6 @@ export default function ProductDetailClient({
                 ) : (
                   "Out of Size Stock"
                 )}
-              </Button>
-
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full h-12 text-xs uppercase font-medium tracking-widest border border-border bg-background hover:bg-secondary"
-              >
-                <Heart className="w-4 h-4 mr-2" /> Add to Wishlist
               </Button>
             </div>
 

@@ -1,3 +1,4 @@
+// /components/cart/CartItemComponent.tsx
 "use client";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -7,8 +8,8 @@ import { CartItem } from "@/lib/cartStore";
 
 interface CartItemProps {
   item: CartItem;
-  onUpdateQuantity: (productId: string, quantity: number) => void;
-  onRemove: (productId: string) => void;
+  onUpdateQuantity: (productId: string, color: string, size: string, quantity: number) => void;
+  onRemove: (productId: string, color: string, size: string) => void;
 }
 
 export default function CartItemComponent({
@@ -18,12 +19,13 @@ export default function CartItemComponent({
 }: CartItemProps) {
   return (
     <div className="flex gap-4 py-4 border-b border-border">
-      {/* Image */}
-      <div className="relative w-20 h-20 bg-secondary rounded overflow-hidden flex-0">
+      <div className="relative w-20 h-20 bg-secondary rounded-xl overflow-hidden shrink-0 border border-border/40">
         <Image
           src={item.imageUrl}
           alt={item.name}
           fill
+          sizes="80px"
+          priority
           className="object-cover"
         />
       </div>
@@ -31,28 +33,41 @@ export default function CartItemComponent({
       {/* Details */}
       <div className="flex-1">
         <h3 className="font-semibold text-foreground">{item.name}</h3>
-        <p className="text-muted-foreground text-sm">${item.price.toFixed(2)}</p>
+        <p className="text-muted-foreground text-sm">
+          ${item.price.toFixed(2)}
+        </p>
+
+        <div>
+          <p className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded inline-block mt-1">
+            {item.color} / {item.size}
+          </p>
+        </div>
 
         {/* Quantity Controls */}
         <div className="flex items-center gap-2 mt-3">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => onUpdateQuantity(item.productId, item.quantity - 1)}
+            // 🚀 Passing item.color and item.size
+            onClick={() => onUpdateQuantity(item.productId, item.color, item.size, item.quantity - 1)}
+            disabled={item.quantity <= 1}
           >
             <Minus className="w-4 h-4" />
           </Button>
           <Input
             type="number"
             value={item.quantity}
-            onChange={(e) => onUpdateQuantity(item.productId, parseInt(e.target.value) || 1)}
+            onChange={(e) =>
+              onUpdateQuantity(item.productId, item.color, item.size, parseInt(e.target.value) || 1)
+            }
             className="w-12 text-center h-8"
             min="1"
           />
           <Button
             variant="outline"
             size="sm"
-            onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
+            // 🚀 Passing item.color and item.size
+            onClick={() => onUpdateQuantity(item.productId, item.color, item.size, item.quantity + 1)}
           >
             <Plus className="w-4 h-4" />
           </Button>
@@ -67,7 +82,7 @@ export default function CartItemComponent({
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => onRemove(item.productId)}
+          onClick={() => onRemove(item.productId, item.color, item.size)}
           className="text-destructive"
         >
           <Trash2 className="w-4 h-4" />

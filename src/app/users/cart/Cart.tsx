@@ -6,7 +6,8 @@ import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCartStore();
+  const { items, removeItem, updateQuantity, getTotalPrice, clearCart } =
+    useCartStore();
 
   const total = getTotalPrice();
   const tax = total * 0.1; // 10% tax
@@ -15,13 +16,19 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen">
         <div className="max-w-4xl mx-auto px-4 py-12">
-          <h1 className="text-3xl font-bold text-foreground mb-8">Shopping Cart</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-8">
+            Shopping Cart
+          </h1>
           <div className="flex flex-col items-center justify-center py-16">
             <ShoppingCart className="w-16 h-16 text-muted-foreground mb-4" />
-            <h2 className="text-xl font-semibold text-foreground mb-2">Your cart is empty</h2>
-            <p className="text-muted-foreground mb-6">Start shopping to add items</p>
+            <h2 className="text-xl font-semibold text-foreground mb-2">
+              Your cart is empty
+            </h2>
+            <p className="text-muted-foreground mb-6">
+              Start shopping to add items
+            </p>
             <Link href="/products">
               <Button>Continue Shopping</Button>
             </Link>
@@ -32,9 +39,11 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold text-foreground mb-8">Shopping Cart</h1>
+    <div className="min-h-screen">
+      <div className="max-w-4xl mx-10 py-12">
+        <h1 className="text-3xl font-bold text-foreground mb-8">
+          Shopping Cart
+        </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
@@ -52,12 +61,14 @@ export default function CartPage() {
             </div>
 
             <div>
-              {items.map((item) => (
+              {items.map((item, index) => (
                 <CartItemComponent
-                  key={item.productId}
+                  key={`${item.productId}-${item.color}-${item.size}`} 
                   item={item}
-                  onUpdateQuantity={updateQuantity}
-                  onRemove={removeItem}
+                  onUpdateQuantity={(id, col, sz, q) =>
+                    updateQuantity(id, col, sz, q)
+                  }
+                  onRemove={(id, col, sz) => removeItem(id, col, sz)}
                 />
               ))}
             </div>
@@ -65,16 +76,22 @@ export default function CartPage() {
 
           {/* Summary */}
           <div className="bg-card border border-border rounded-lg p-6 h-fit sticky top-20">
-            <h2 className="text-lg font-semibold text-foreground mb-6">Order Summary</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-6">
+              Order Summary
+            </h2>
 
             <div className="space-y-3 mb-6 pb-6 border-b border-border">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span className="text-foreground font-medium">${total.toFixed(2)}</span>
+                <span className="text-foreground font-medium">
+                  ${total.toFixed(2)}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Tax (10%)</span>
-                <span className="text-foreground font-medium">${tax.toFixed(2)}</span>
+                <span className="text-foreground font-medium">
+                  ${tax.toFixed(2)}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Shipping</span>
@@ -90,7 +107,9 @@ export default function CartPage() {
 
             <div className="flex justify-between items-center mb-6">
               <span className="text-lg font-bold text-foreground">Total</span>
-              <span className="text-2xl font-bold text-foreground">${grandTotal.toFixed(2)}</span>
+              <span className="text-2xl font-bold text-foreground">
+                ${grandTotal.toFixed(2)}
+              </span>
             </div>
 
             <Link href="/users/checkout" className="w-full">
