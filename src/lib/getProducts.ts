@@ -10,7 +10,6 @@ export const getProducts = async (): Promise<ProductTypes[]> => {
     
     return JSON.parse(JSON.stringify(products));
   } catch (error) {
-    console.error(" Direct Database fetch failed for products list:", error);
     return [];
   }
 };

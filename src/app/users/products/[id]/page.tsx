@@ -18,7 +18,6 @@ const getSingleProduct = (async (id: string): Promise<ProductTypes | null> => {
     if (!product) return null;
     return JSON.parse(JSON.stringify(product));
   } catch (error) {
-    console.error("Direct Database query crashed for product id:", id, error);
     return null;
   }
 });
@@ -32,7 +31,6 @@ const getProductReviews = async (productId: string) => {
       .lean();
     return JSON.parse(JSON.stringify(reviews));
   } catch (error) {
-    console.error("Server-side reviews fetch crashed:", error);
     return [];
   }
 };

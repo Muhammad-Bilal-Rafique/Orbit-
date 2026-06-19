@@ -24,7 +24,6 @@ export async function toggleWishlistAction(productId: string) {
       return { success: true, action: "added" };
     }
   } catch (error) {
-    console.error("❌ Wishlist Action operational crash:", error);
     return { success: false, error: "Internal server error execution lock" };
   }
 }

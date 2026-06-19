@@ -44,7 +44,7 @@ export default function ReviewModal({ productId, productName,orderId,onReviewSuc
       setRating(0);
       setComment("");
     } catch (error: any) {
-      toast.error("Sync failure while publishing customer review validation tier.");
+      toast.error("Failed to Upload review.");
     } finally {
       setIsSubmitting(false);
     }

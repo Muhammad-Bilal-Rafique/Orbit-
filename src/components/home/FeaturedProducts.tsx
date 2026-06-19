@@ -12,7 +12,6 @@ const getFeaturedProducts = async (): Promise<ProductTypes[]> => {
     const products = await Product.find({ isFeatured: true }).lean();
     return JSON.parse(JSON.stringify(products));
   } catch (error) {
-    console.error("Direct DB fetch error on homepage featured feed:", error);
     return [];
   }
 };

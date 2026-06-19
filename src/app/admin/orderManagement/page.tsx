@@ -24,7 +24,6 @@ const getOrdersDirect = async (): Promise<OrderType[]> => {
     
     return JSON.parse(JSON.stringify(orders));
   } catch (error) {
-    console.error(" Direct Database fetch failed for admin orders:", error);
     return [];
   }
 };

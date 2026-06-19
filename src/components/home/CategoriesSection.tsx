@@ -13,12 +13,12 @@ import {
 import { MotionView, MotionItem } from "@/components/shared/motion-view";
 
 const CATEGORIES = [
-  { name: "T-Shirts", href: "/products?category=t-shirts", icon: Shirt },
-  { name: "Shirts", href: "/products?category=shirts", icon: Scissors },
-  { name: "Hoodies", href: "/products?category=hoodies", icon: Flame },
-  { name: "Jackets", href: "/products?category=jackets", icon: Wind },
-  { name: "Pants", href: "/products?category=pants", icon: Layers },
-  { name: "Shorts", href: "/products?category=shorts", icon: Sun },
+  { name: "T-Shirts", href: "/users/products", icon: Shirt },
+  { name: "Shirts", href: "/users/products", icon: Scissors },
+  { name: "Hoodies", href: "/users/products", icon: Flame },
+  { name: "Jackets", href: "/users/products", icon: Wind },
+  { name: "Pants", href: "/users/products", icon: Layers },
+  { name: "Shorts", href: "/users/products", icon: Sun },
 ];
 
 export default function CategoriesSection() {

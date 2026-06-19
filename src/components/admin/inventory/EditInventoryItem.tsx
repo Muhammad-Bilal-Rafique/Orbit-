@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ProductTypes } from "@/types/ProductTypes";
 import axios from "axios";
+import {toast} from "sonner"
 
 interface EditInventoryItemProps {
   product: ProductTypes;
@@ -70,8 +71,9 @@ export default function EditInventoryItem({
       await axios.put("/api/admin/editProduct", cleanData);
       onConfirm();
       onClose();
+      toast.success("Product updated successfully!")
     } catch (error) {
-      console.error("Update execution failed:", error);
+      toast.error("Failed to update product , Please try again later.")
     }
   };
 

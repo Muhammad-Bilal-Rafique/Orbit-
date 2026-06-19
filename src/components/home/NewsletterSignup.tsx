@@ -9,15 +9,16 @@ export default function NewsletterSignup() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
+    console.log("Triggering...")
     setIsSubmitting(true);
     
     try {
       toast.success("Thanks for subscribing!");
       setEmail("");
     } catch (error) {
-      toast.error("Failed to subscribe");
+      toast.error("Failed to subscribe Please try again later!");
     } finally {
       setIsSubmitting(false);
     }
@@ -52,7 +53,7 @@ export default function NewsletterSignup() {
                 disabled={isSubmitting}
                 className="flex-1 h-11 rounded-xl bg-background/50 border-border/60"
               />
-              <Button disabled={isSubmitting} className="sm:w-auto h-11 rounded-xl px-6 font-semibold cursor-pointer transition-transform hover:scale-[1.02]">
+              <Button type="submit" disabled={isSubmitting} className="sm:w-auto h-11 rounded-xl px-6 font-semibold cursor-pointer transition-transform hover:scale-[1.02]">
                 {isSubmitting ? "Subscribing..." : "Subscribe"}
               </Button>
             </form>

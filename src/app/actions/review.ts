@@ -24,7 +24,6 @@ export async function getProductReviewsAction(productId: string) {
       reviews: JSON.parse(JSON.stringify(reviews)) 
     };
   } catch (error) {
-    console.error("Critical reviews fetch pipeline crash:", error);
     return { success: false, error: "Failed to load database reviews context." };
   }
 }

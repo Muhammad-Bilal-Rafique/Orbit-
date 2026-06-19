@@ -26,7 +26,7 @@ export default async function WishlistPage() {
 
   await connectDb();
 
-  // 🔥 Populate the referenced product document fields entirely to feed the card props structure
+  //  Populate the referenced product document fields entirely to feed the card props structure
   const savedItems = await Wishlist.find({ userId: session.user.email })
     .populate("productId")
     .lean();

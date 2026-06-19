@@ -17,7 +17,6 @@ const getProducts = async (): Promise<ProductTypes[]> => {
     const products = await Product.find({}).lean();
     return JSON.parse(JSON.stringify(products));
   } catch (error) {
-    console.error("Error fetching products inside server matrix:", error);
     return [];
   }
 };

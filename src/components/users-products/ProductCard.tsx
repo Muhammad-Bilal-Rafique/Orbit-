@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ProductTypes } from "@/types/ProductTypes";
 import { Heart } from "lucide-react";
 import { toggleWishlistAction } from "@/app/actions/wishlist";
+import { toast } from "sonner";
 
 type ProductCardProps = Pick<
   ProductTypes,
@@ -52,13 +53,12 @@ export default function ProductCard({
 
     try {
       const res = await toggleWishlistAction(productId);
-
       if (!res.success) {
         setaddInList(previousState);
-        alert(res.error || "Failed to update wishlist");
+        toast.error("Wishlist synchronization delayed.")
       }
     } catch (error) {
-      console.error("Wishlist sync error:", error);
+      toast.error("Connection timeout. Try again.")
       setaddInList(previousState);
     }
   };

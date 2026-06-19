@@ -50,11 +50,9 @@ export default function CheckoutPage(): React.ReactNode {
           cancelUrl: `${window.location.origin}/users/checkout`,
         }
       );
-      clearCart();
       window.location.href = response.data.url;
-    } catch (error) {
-      console.error("Checkout error:", error);
-      
+      clearCart();
+    } catch (error) {      
       //  INTERCEPT STOCK OUT ERRORS FROM BACKEND
       if (axios.isAxiosError(error) && error.response) {
         const backendMessage = error.response.data?.message || "Checkout failed.";

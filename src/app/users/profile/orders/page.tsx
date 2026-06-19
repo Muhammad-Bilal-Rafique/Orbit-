@@ -18,7 +18,6 @@ const getUserOrdersDirect = async (userEmail: string): Promise<OrderType[]> => {
     const orders = await Order.find({ userEmail }).sort({ createdAt: -1 }).lean();
     return JSON.parse(JSON.stringify(orders));
   } catch (error) {
-    console.error("Database query exception on user orders manifest:", error);
     return [];
   }
 };

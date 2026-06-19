@@ -43,8 +43,6 @@ const handleStatusChange = async (
       `Order #${orderId.substring(18)} successfully transitioned to [${newStatus.toUpperCase()}]`,
     );
   } catch (err: any) {
-    console.error("API Error status sync failed:", err);
-
     // 5. Rollback UI State if API fails
     setOrders(previousOrdersState);
 
