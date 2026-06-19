@@ -16,6 +16,7 @@ const getProducts = async (): Promise<ProductTypes[]> => {
     await connectDb();
     const products = await Product.find({}).lean();
     return JSON.parse(JSON.stringify(products));
+
   } catch (error) {
     return [];
   }
