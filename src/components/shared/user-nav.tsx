@@ -2,15 +2,13 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
-import Link from "next/link";
-import { User, LogOut, Package, Settings, Heart } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 
 export default function UserNav() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Bahar click karne par dropdown automatic close ho jaye
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -53,35 +51,11 @@ export default function UserNav() {
           {/* SEPARATOR */}
           <div className="h-px bg-border my-1" />
 
-          {/* CORE NAVIGATION LINKS */}
-          <div className="space-y-0.5">
-            <Link
-              href="/users/profile/orders"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center gap-2 rounded-sm px-3 py-2 text-sm text-foreground hover:bg-secondary/80 transition-colors cursor-pointer"
-            >
-              <Package className="w-4 h-4 text-muted-foreground" />
-              <span>Order History & Tracking</span>
-            </Link>
-
-            <Link
-              href="/users/profile/wishlist"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center gap-2 rounded-sm px-3 py-2 text-sm text-foreground hover:bg-secondary/80 transition-colors cursor-pointer"
-            >
-              <Heart className="w-4 h-4 text-muted-foreground" />
-              <span>My Wishlist</span>
-            </Link>
-          </div>
-
-          {/* SEPARATOR */}
-          <div className="h-px bg-border my-1" />
-
-          {/* LOGOUT BUTTON */}
+          {/* LOGOUT BUTTON ONLY INSIDE THE DROP WINDOW */}
           <button
             onClick={() => {
               setIsOpen(false);
-              signOut({ callbackUrl: "/users/home" });
+              signOut({ callbackUrl: "/" }); // Safe routing reset redirection path
             }}
             type="button"
             className="w-full flex items-center gap-2 rounded-sm px-3 py-2 text-sm text-destructive font-medium hover:bg-destructive/10 transition-colors text-left cursor-pointer"

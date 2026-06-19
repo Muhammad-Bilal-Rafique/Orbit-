@@ -173,9 +173,12 @@ export default function AddProduct() {
                   className="w-full h-10 bg-background border border-input focus:border-ring focus:ring-1 focus:ring-ring transition-all rounded-md px-3 text-sm text-foreground outline-none cursor-pointer appearance-none"
                 >
                   <option value="">--Select Category--</option>
+                  <option value="t-shirts">T-Shirts</option>
                   <option value="shirts">Shirts</option>
+                  <option value="hoodies">Hoodies</option>
+                  <option value="jackets">Jackets</option>
                   <option value="pants">Pants</option>
-                  <option value="shoes">Footwear</option>
+                  <option value="shorts">Shorts</option>
                 </select>
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground text-xs">
                   ▼

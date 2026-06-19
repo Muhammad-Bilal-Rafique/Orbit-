@@ -2,6 +2,8 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 const PRICE_RANGES = [
   { label: "All Prices", min: 0, max: Infinity },
@@ -34,6 +36,17 @@ export default function FilterSidebar({
   onClearFilters,
   hasActiveFilters,
 }: FilterSidebarProps) {
+
+  const searchParams = useSearchParams();
+const categoryParam = searchParams.get("category");
+
+useEffect(() => {
+  if (categoryParam) {
+    onCategoryChange(categoryParam); 
+  }
+}, [categoryParam, onCategoryChange]);
+
+
   return (
     <div className="lg:col-span-1">
       <div className="sticky top-4 space-y-6">

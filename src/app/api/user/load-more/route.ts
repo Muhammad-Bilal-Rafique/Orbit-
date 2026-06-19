@@ -10,7 +10,7 @@ export async function GET(request: Request) {
 
     await connectDb();
 
-    // Agle 8 products nikalain
+    
     const products = await Product.find({})
       .sort({ createdAt: -1 })
       .skip(skip)
