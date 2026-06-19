@@ -46,9 +46,9 @@ export default function CartItemComponent({
         {/* Quantity Controls */}
         <div className="flex items-center gap-2 mt-3">
           <Button
+          className="cursor-pointer"
             variant="outline"
             size="sm"
-            // 🚀 Passing item.color and item.size
             onClick={() => onUpdateQuantity(item.productId, item.color, item.size, item.quantity - 1)}
             disabled={item.quantity <= 1}
           >
@@ -64,9 +64,9 @@ export default function CartItemComponent({
             min="1"
           />
           <Button
+          className="cursor-pointer"
             variant="outline"
             size="sm"
-            // 🚀 Passing item.color and item.size
             onClick={() => onUpdateQuantity(item.productId, item.color, item.size, item.quantity + 1)}
           >
             <Plus className="w-4 h-4" />
@@ -83,7 +83,7 @@ export default function CartItemComponent({
           variant="ghost"
           size="sm"
           onClick={() => onRemove(item.productId, item.color, item.size)}
-          className="text-destructive"
+          className="text-destructive cursor-pointer"
         >
           <Trash2 className="w-4 h-4" />
         </Button>
