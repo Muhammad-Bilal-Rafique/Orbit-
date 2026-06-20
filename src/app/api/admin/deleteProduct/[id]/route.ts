@@ -2,12 +2,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDb } from "@/lib/connectDb";
 import { Product } from "@/models/Product";
+import { getToken } from "next-auth/jwt";
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const token = await getToken({
+      req: request,
+      secret: process.env.AUTH_SECRET,
+    });
+
+    if (!token || token.role !== "admin") {
+      return NextResponse.json(
+        { message: "Unauthorized asset modification layout." },
+        { status: 401 },
+      );
+    }
     const { id } = await params;
 
     await connectDb();
@@ -18,7 +30,7 @@ export async function DELETE(
     console.error("Delete error:", error);
     return NextResponse.json(
       { message: "Failed to delete product" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

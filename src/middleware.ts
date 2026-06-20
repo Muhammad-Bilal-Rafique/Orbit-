@@ -13,14 +13,14 @@ export async function middleware(req: NextRequest) {
   }
 
   // Check admin route
-  // if (isOnAdmin) {
-  //   if (!token) {
-  //     return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
-  //   }
-  //   if (token.role !== "admin") {
-  //     return NextResponse.redirect(new URL("/", req.nextUrl));
-  //   }
-  // }
+  if (isOnAdmin) {
+    if (!token) {
+      return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
+    }
+    if (token.role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.nextUrl));
+    }
+  }
 }
 
 export const config = {

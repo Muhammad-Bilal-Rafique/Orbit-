@@ -19,12 +19,12 @@ export async function POST(request: NextRequest) {
     });
     
     // Check if token exists and verify if the user role is authorized as admin
-    // if (!token || token.role !== "admin") {
-    //   return NextResponse.json(
-    //     { message: "Unauthorized asset modification layout." },
-    //     { status: 401 }
-    //   );
-    // }
+    if (!token || token.role !== "admin") {
+      return NextResponse.json(
+        { message: "Unauthorized asset modification layout." },
+        { status: 401 }
+      );
+    }
 
     // 2. Extract Multivariant JSON Tree Structure Payload
     const body = await request.json();

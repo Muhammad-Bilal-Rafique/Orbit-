@@ -11,12 +11,12 @@ export async function PUT(request: NextRequest) {
       secret: process.env.AUTH_SECRET,
     });
 
-    // if (!token || token.role !== "admin") {
-    //   return NextResponse.json(
-    //     { message: "Unauthorized access path." },
-    //     { status: 401 }
-    //   );
-    // }
+    if (!token || token.role !== "admin") {
+      return NextResponse.json(
+        { message: "Unauthorized access path." },
+        { status: 401 }
+      );
+    }
 
     // 2. Extract Data Tree
     const body = await request.json();
