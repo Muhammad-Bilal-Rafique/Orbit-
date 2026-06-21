@@ -43,13 +43,17 @@ export default function LoginPage() {
 
 const onSubmit: SubmitHandler<LoginTypes> = async (data) => {
   try {
+    console.log("1. Starting login...");
     const result = await signIn("credentials", {
       email: data.email,
       password: data.password,
       redirect: false,
     });
 
+    console.log("2. SignIn result:", result);
+
     if (result?.error) {
+      console.log("3. Got error:", result.error);
       if (result.code === "not_verified") {
         toast.error("Email not verified", {
           description: "Check your email for verification link",
@@ -71,17 +75,21 @@ const onSubmit: SubmitHandler<LoginTypes> = async (data) => {
       return;
     }
 
-    // Fetch session to get the updated role
+    console.log("4. No error, fetching session...");
     const session = await getSession();
-     console.log("Session after login:", session); 
-    console.log("User role:", session?.user?.role); 
+    console.log("5. Session:", session);
+    console.log("6. Role check - role is admin?", session?.user?.role === "admin");
+
     if (session?.user?.role === "admin") {
+      console.log("7. Redirecting to /admin");
       router.push("/admin");
     } else {
+      console.log("7. Redirecting to /");
       router.push("/");
     }
+    console.log("8. Done");
   } catch (error) {
-    console.error(error);
+    console.error("9. CAUGHT ERROR:", error);
     toast.error("Something went wrong");
   }
 };
