@@ -7,7 +7,6 @@ import { DefaultSession } from "next-auth";
 import Google from "next-auth/providers/google";
 import { CredentialsSignin } from "next-auth";
 
-
 class notVerifiedError extends CredentialsSignin {
   code = "not_verified";
 }
@@ -19,8 +18,12 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      role:string
+      role: string;
     } & DefaultSession["user"];
+  }
+
+  interface User {
+    role?: string;
   }
 }
 
@@ -41,6 +44,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
           const user = await User.findOne({ email: credentials?.email });
           if (!user) return null;
+
           const isValid = await bcrypt.compare(
             credentials?.password as string,
             user.password,
@@ -49,7 +53,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           if (!user.password) {
             throw new GoogleAccountError();
           }
-          
+
           if (!isValid) return null;
 
           if (!user.isVerified) {
@@ -60,6 +64,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             id: user._id.toString(),
             name: user.name,
             email: user.email,
+            role: user.role,
           };
         } catch (error) {
           if (
@@ -96,35 +101,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       }
       return true;
     },
-async jwt({ token, user, account }) {
-  // First time after signin - fetch from DB
-  if (user) {
-    try {
-      await connectDb();
-      const dbUser = await User.findOne({ email: user.email });
-      if (dbUser) {
-        token.id = dbUser._id.toString();
-        token.role = dbUser.role;
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id as string;
+        token.role = user.role as string;
       }
-    } catch (error) {
-      console.error("JWT callback error:", error);
-    }
-  }
-  // On subsequent calls, if role is still missing, fetch it again
-  else if (token.email && !token.role) {
-    try {
-      await connectDb();
-      const dbUser = await User.findOne({ email: token.email });
-      if (dbUser) {
-        token.role = dbUser.role;
-      }
-    } catch (error) {
-      console.error("JWT refresh error:", error);
-    }
-  }
-  
-  return token;
-},
+      return token;
+    },
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
@@ -134,7 +117,7 @@ async jwt({ token, user, account }) {
     },
   },
   pages: {
-    signIn: "/login",
+    signIn: "/auth/login",
   },
   session: {
     strategy: "jwt",
