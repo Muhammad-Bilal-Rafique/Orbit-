@@ -53,15 +53,15 @@ interface PageProps {
 
 export default async function AdminDashboardPage({ searchParams }: PageProps) {
   // Check if user is admin
-//  const session = await auth();
-//   console.log("Auth session:", session);
-//   console.log("User:", session?.user);
-//   console.log("Role:", session?.user?.role);
+ const session = await auth();
+  console.log("Auth session:", session);
+  console.log("User:", session?.user);
+  console.log("Role:", session?.user?.role);
   
-  // if (!session?.user?.role || session.user.role !== "admin") {
-  //   console.log("NOT ADMIN - redirecting");
-  //   redirect("/");
-  // }
+  if (!session?.user?.role || session.user.role !== "admin") {
+    console.log("NOT ADMIN - redirecting");
+    redirect("/");
+  }
 
   const resolvedParams = await searchParams;
   const fromDate = resolvedParams.from;
