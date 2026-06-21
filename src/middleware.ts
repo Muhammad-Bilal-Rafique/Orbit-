@@ -7,21 +7,17 @@ export async function middleware(req: NextRequest) {
   const isOnCheckout = req.nextUrl.pathname.startsWith("/users/checkout");
   const isOnAdmin = req.nextUrl.pathname.startsWith("/admin");
 
-  console.log("Token:", token);
-   console.log("Token role:", token?.role);
   // Check checkout route
   if (isOnCheckout && !token) {
     return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
   }
 
-  // Check admin route
+  // Check admin route - only check if logged in, NOT role
   if (isOnAdmin) {
     if (!token) {
       return NextResponse.redirect(new URL("/auth/login", req.nextUrl));
     }
-    if (token.role !== "admin") {
-      return NextResponse.redirect(new URL("/", req.nextUrl));
-    }
+    // Remove the role check - let client handle it
   }
 }
 

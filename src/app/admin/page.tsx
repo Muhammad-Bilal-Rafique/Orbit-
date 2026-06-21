@@ -1,5 +1,8 @@
 import { Metadata } from "next";
 import { connectDb } from "@/lib/connectDb";
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { Order } from "@/models/Order";
 import OrderMetrics from "@/components/admin/Orders/order-metrics";
 import AnalyticsCharts from "@/components/admin/dashboard/AnalyticsCharts";
@@ -50,8 +53,16 @@ interface PageProps {
 }
 
 export default async function AdminDashboardPage({ searchParams }: PageProps) {
-  const resolvedParams = await searchParams;
+  const { data: session } = useSession();
+  const router = useRouter();
 
+  useEffect(() => {
+    if (session && session.user?.role !== "admin") {
+      router.push("/");
+    }
+  }, [session, router]);
+
+  const resolvedParams = await searchParams;
   const fromDate = resolvedParams.from;
   const toDate = resolvedParams.to;
 
@@ -59,8 +70,7 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
   const rawOrders = await getDashboardDataTracer(fromDate, toDate);
 
   return (
-   <div className="space-y-8 font-sans bg-background">
-      
+    <div className="space-y-8 font-sans bg-background">
       {/* SECTION HEADER BLOCK */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border/40 pb-4">
         <div>
@@ -68,14 +78,15 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
             Operational Analytics
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Real-time business performance analytics matrix sorted by targeted calendar ranges.
+            Real-time business performance analytics matrix sorted by targeted
+            calendar ranges.
           </p>
         </div>
-        
+
         {/*HIGH-END CONTROLLER OPERATIONS GRIDS */}
         <div className="flex flex-wrap items-center gap-3">
           <ExportCSVButton orders={rawOrders} />
-          
+
           <DateRangePicker />
           <div className="text-[10px] bg-secondary border border-border text-muted-foreground font-mono px-2.5 py-1 rounded whitespace-nowrap">
             Live Data Engine
@@ -89,7 +100,6 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
       <AnalyticsCharts orders={rawOrders} />
 
       <TopProductsLeaderboard orders={rawOrders} />
-
     </div>
   );
 }
