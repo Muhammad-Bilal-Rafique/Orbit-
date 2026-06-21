@@ -81,12 +81,17 @@ const onSubmit: SubmitHandler<LoginTypes> = async (data) => {
     console.log("6. Role check - role is admin?", session?.user?.role === "admin");
 
     if (session?.user?.role === "admin") {
-      console.log("7. Redirecting to /admin");
-      router.push("/admin");
-    } else {
-      console.log("7. Redirecting to /");
-      router.push("/");
-    }
+  try {
+    console.log("About to push /admin");
+    await router.push("/admin");
+    console.log("Push complete");
+  } catch (error) {
+    console.error("Router push error:", error);
+  }
+} else {
+  router.push("/");
+}
+
     console.log("8. Done");
   } catch (error) {
     console.error("9. CAUGHT ERROR:", error);
