@@ -1,8 +1,7 @@
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 import { Metadata } from "next";
 import { connectDb } from "@/lib/connectDb";
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { Order } from "@/models/Order";
 import OrderMetrics from "@/components/admin/Orders/order-metrics";
 import AnalyticsCharts from "@/components/admin/dashboard/AnalyticsCharts";
@@ -53,20 +52,16 @@ interface PageProps {
 }
 
 export default async function AdminDashboardPage({ searchParams }: PageProps) {
-  const { data: session } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (session && session.user?.role !== "admin") {
-      router.push("/");
-    }
-  }, [session, router]);
+  // Check if user is admin
+  const session = await auth();
+  if (!session?.user?.role || session.user.role !== "admin") {
+    redirect("/");
+  }
 
   const resolvedParams = await searchParams;
   const fromDate = resolvedParams.from;
   const toDate = resolvedParams.to;
 
-  // Fire execution directly on Mongo server context
   const rawOrders = await getDashboardDataTracer(fromDate, toDate);
 
   return (
@@ -83,10 +78,8 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
           </p>
         </div>
 
-        {/*HIGH-END CONTROLLER OPERATIONS GRIDS */}
         <div className="flex flex-wrap items-center gap-3">
           <ExportCSVButton orders={rawOrders} />
-
           <DateRangePicker />
           <div className="text-[10px] bg-secondary border border-border text-muted-foreground font-mono px-2.5 py-1 rounded whitespace-nowrap">
             Live Data Engine
@@ -94,11 +87,8 @@ export default async function AdminDashboardPage({ searchParams }: PageProps) {
         </div>
       </div>
 
-      {/* Grid Elements Allocation Components */}
       <OrderMetrics orders={rawOrders} />
-
       <AnalyticsCharts orders={rawOrders} />
-
       <TopProductsLeaderboard orders={rawOrders} />
     </div>
   );
