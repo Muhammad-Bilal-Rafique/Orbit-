@@ -19,6 +19,7 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
+      role:string
     } & DefaultSession["user"];
   }
 }
@@ -101,6 +102,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         const dbUser = await User.findOne({ email: user.email });
         if (dbUser) {
           token.id = dbUser._id.toString();
+          token.role = dbUser.role;
         }
       }
       return token;
@@ -108,6 +110,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
+        session.user.role = token.role as string;
       }
       return session;
     },

@@ -7,6 +7,8 @@ export async function middleware(req: NextRequest) {
   const isOnCheckout = req.nextUrl.pathname.startsWith("/users/checkout");
   const isOnAdmin = req.nextUrl.pathname.startsWith("/admin");
 
+  console.log("Token:", token);
+   console.log("Token role:", token?.role);
   // Check checkout route
   if (isOnCheckout && !token) {
     return NextResponse.redirect(new URL("/auth/login", req.nextUrl));

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import Logo from "@/assets/Logo.png";
+import {getSession} from "next-auth/react"
 import {
   Card,
   CardContent,
@@ -40,41 +41,49 @@ export default function LoginPage() {
     }
   };
 
-  const onSubmit: SubmitHandler<LoginTypes> = async (data) => {
-    try {
-      const result = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      });
+const onSubmit: SubmitHandler<LoginTypes> = async (data) => {
+  try {
+    const result = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    });
 
-      if (result?.error) {
-        if (result.code === "not_verified") {
-          toast.error("Email not verified", {
-            description: "Check your email for verification link",
-            action: {
-              label: "Verify",
-              onClick: () =>
-                router.push(`/auth/verify-email?email=${data.email}`),
-            },
-          });
-          return;
-        }
-
-        if (result.code === "google_account_error") {
-          toast.error("This account uses Google login");
-          return;
-        }
-
-        toast.error("Invalid email or password");
+    if (result?.error) {
+      if (result.code === "not_verified") {
+        toast.error("Email not verified", {
+          description: "Check your email for verification link",
+          action: {
+            label: "Verify",
+            onClick: () =>
+              router.push(`/auth/verify-email?email=${data.email}`),
+          },
+        });
         return;
       }
 
-      router.push("/");
-    } catch (error) {
-      toast.error("Something went wrong");
+      if (result.code === "google_account_error") {
+        toast.error("This account uses Google login");
+        return;
+      }
+
+      toast.error("Invalid email or password");
+      return;
     }
-  };
+
+    // Fetch session to get the updated role
+    const session = await getSession();
+    
+    if (session?.user?.role === "admin") {
+      router.push("/admin");
+    } else {
+      router.push("/");
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error("Something went wrong");
+  }
+};
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
