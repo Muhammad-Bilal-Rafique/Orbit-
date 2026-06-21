@@ -96,17 +96,35 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       }
       return true;
     },
-    async jwt({ token, user, account }) {
-      if (user) {
-        await connectDb();
-        const dbUser = await User.findOne({ email: user.email });
-        if (dbUser) {
-          token.id = dbUser._id.toString();
-          token.role = dbUser.role;
-        }
+   async jwt({ token, user, account }) {
+  if (user) {
+    try {
+      await connectDb();
+      const dbUser = await User.findOne({ email: user.email });
+      if (dbUser) {
+        token.id = dbUser._id.toString();
+        token.role = dbUser.role; // Should be "admin"
       }
-      return token;
-    },
+    } catch (error) {
+      console.error("JWT callback error:", error);
+    }
+  }
+  
+  // On subsequent requests, if role is missing, try to fetch again
+  if (!token.role && token.email) {
+    try {
+      await connectDb();
+      const dbUser = await User.findOne({ email: token.email });
+      if (dbUser) {
+        token.role = dbUser.role;
+      }
+    } catch (error) {
+      console.error("JWT refresh error:", error);
+    }
+  }
+  
+  return token;
+},
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
