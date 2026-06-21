@@ -96,22 +96,22 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       }
       return true;
     },
-   async jwt({ token, user, account }) {
+async jwt({ token, user, account }) {
+  // First time after signin - fetch from DB
   if (user) {
     try {
       await connectDb();
       const dbUser = await User.findOne({ email: user.email });
       if (dbUser) {
         token.id = dbUser._id.toString();
-        token.role = dbUser.role; // Should be "admin"
+        token.role = dbUser.role;
       }
     } catch (error) {
       console.error("JWT callback error:", error);
     }
   }
-  
-  // On subsequent requests, if role is missing, try to fetch again
-  if (!token.role && token.email) {
+  // On subsequent calls, if role is still missing, fetch it again
+  else if (token.email && !token.role) {
     try {
       await connectDb();
       const dbUser = await User.findOne({ email: token.email });
