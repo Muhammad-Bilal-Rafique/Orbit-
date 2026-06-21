@@ -73,7 +73,8 @@ const onSubmit: SubmitHandler<LoginTypes> = async (data) => {
 
     // Fetch session to get the updated role
     const session = await getSession();
-    
+     console.log("Session after login:", session); 
+    console.log("User role:", session?.user?.role); 
     if (session?.user?.role === "admin") {
       router.push("/admin");
     } else {
