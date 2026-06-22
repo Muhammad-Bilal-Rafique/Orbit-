@@ -19,13 +19,17 @@ export async function POST(request: NextRequest) {
       secret: process.env.AUTH_SECRET,
     });
 
-    // Check if token exists and verify if the user role is authorized as admin
+    console.log("Token:", token);
+    console.log("Token email:", token?.email);
+
     if (!token) {
+      console.log("NO TOKEN");
       return NextResponse.json(
         { message: "Unauthorized asset modification layout." },
         { status: 401 },
       );
     }
+
     await connectDb();
     const user = await User.findOne({ email: token.email });
 
