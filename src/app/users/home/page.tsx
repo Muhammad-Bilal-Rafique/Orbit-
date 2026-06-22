@@ -6,6 +6,8 @@ import NewsletterSignup from "@/components/home/NewsletterSignup";
 import type {Metadata} from "next"
 import { getActiveWishlistIdsAction } from "@/app/actions/wishlist";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Orbit | Curated High-End Tech & Minimalist Gear",
   description: "Explore Orbit's ultra-clean collection of luxury hardware and architectural minimalist design accessories. Experience next-generation ecommerce.",

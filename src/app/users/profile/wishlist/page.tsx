@@ -6,6 +6,8 @@ import { Wishlist } from "@/models/Wishlist";
 import ProductCard from "@/components/users-products/ProductCard"; 
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Your Saved Wishlist | Orbit",
   description: "Review and manage your curated collection of premium accessories and minimalist hardware assets.",

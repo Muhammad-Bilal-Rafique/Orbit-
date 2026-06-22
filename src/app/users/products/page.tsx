@@ -6,6 +6,8 @@ import type { Metadata } from "next";
 import { getActiveWishlistIdsAction } from "@/app/actions/wishlist";
 import { MotionView, MotionItem } from "@/components/shared/motion-view";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Premium Catalog | Orbit",
   description: "Browse our entire ecosystem of minimalist clothing drops. Filter through elite apparel essentials.",

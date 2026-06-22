@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: "Track active shipments, inspect past invoice statements, and manage your personal purchase history manifest in real-time.",
 };
 
+export const dynamic = 'force-dynamic';
+
 const getUserOrdersDirect = async (userEmail: string): Promise<OrderType[]> => {
   try {
     await connectDb();

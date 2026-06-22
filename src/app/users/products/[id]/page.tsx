@@ -11,6 +11,8 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+
 const getSingleProduct = (async (id: string): Promise<ProductTypes | null> => {
   try {
     await connectDb();
@@ -24,7 +26,6 @@ const getSingleProduct = (async (id: string): Promise<ProductTypes | null> => {
 const getProductReviews = async (productId: string) => {
   try {
     await connectDb();
-    // Fetch and populate user profile fields safely on server node
     const reviews = await Review.find({ productId })
       .populate("userId", "name email")
       .sort({ createdAt: -1 })
