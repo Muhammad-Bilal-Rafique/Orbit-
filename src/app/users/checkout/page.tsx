@@ -1,6 +1,7 @@
 import type {Metadata} from "next"
 import CheckoutPage from "./Checkout"
 
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: "Secure Checkout | Orbit",
