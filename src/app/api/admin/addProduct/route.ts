@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { auth } from "@/auth"
 import { v2 as cloudinary } from "cloudinary";
 import { connectDb } from "@/lib/connectDb";
 import { Product } from "@/models/Product";
@@ -14,24 +14,25 @@ cloudinary.config({
 export async function POST(request: NextRequest) {
   try {
     // 1. Secure API Thread Layer Verification
-    const token = await getToken({
-      req: request,
-      secret: process.env.AUTH_SECRET,
-    });
+     const session = await auth();
+    
+    console.log("Session:", session);
+    console.log("User role:", session?.user?.role);
 
-    console.log("Token:", token);
-    console.log("Token email:", token?.email);
-
-    if (!token) {
-      console.log("NO TOKEN");
+    if (!session || !session.user) {
       return NextResponse.json(
-        { message: "Unauthorized asset modification layout." },
-        { status: 401 },
+        { message: "Unauthorized" },
+        { status: 401 }
       );
     }
 
     await connectDb();
-    const user = await User.findOne({ email: token.email });
+    const user = await User.findOne({ email: session.user.email });
+
+    if (!user || user.role !== "admin") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
 
     if (!user || user.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
