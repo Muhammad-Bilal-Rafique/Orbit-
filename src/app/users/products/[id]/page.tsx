@@ -30,8 +30,10 @@ const getProductReviews = async (productId: string) => {
       .populate("userId", "name email")
       .sort({ createdAt: -1 })
       .lean();
+      
     return JSON.parse(JSON.stringify(reviews));
   } catch (error) {
+    console.error("Error fetching reviews:", error);
     return [];
   }
 };
@@ -73,7 +75,7 @@ export default async function ProductDetailPage({ params }: Props) {
         averageRating={averageRating}
         totalReviews={totalReviews}
       />
-      <Reviews 
+      <Reviews
         productId={id} 
         initialReviews={reviews}
         averageRating={averageRating}

@@ -4,17 +4,26 @@ import { Order } from "@/models/Order";
 import { Review } from "@/models/Review";
 import { Product } from "@/models/Product";
 import Groq from "groq-sdk";
+import mongoose from "mongoose"; // ✨ standard mapping placement
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-async function triggerBackgroundAISummary(productId: string) {
+async function triggerBackgroundAISummary(productIdStr: string) {
   try {
+    // 🌟 Check verify karkay handle karein taaki BSONError kabhi na aaye
+    if (!mongoose.Types.ObjectId.isValid(productIdStr)) {
+      console.error("Invalid Product ID passed to AI engine:", productIdStr);
+      return;
+    }
+    
+    const targetObjectId = new mongoose.Types.ObjectId(productIdStr);
+
     const [reviews, product] = await Promise.all([
-      Review.find({ productId }).select("comment rating").lean(),
-      Product.findById(productId).select("name category description").lean(),
+      Review.find({ productId: targetObjectId }).select("comment rating").lean(),
+      Product.findById(targetObjectId).select("name category description").lean(),
     ]);
 
-    if (reviews.length < 3 || !product) return;
+    if (!reviews || reviews.length < 3 || !product) return;
 
     const formattedReviews = reviews
       .map((r, i) => `Review #${i + 1} (Rating: ${r.rating}/5): "${r.comment}"`)
@@ -65,11 +74,10 @@ Calculated Average Rating: ${averageRating} / 5.0
       max_tokens: 150,
     });
 
-    const aiTextOutput =
-      chatCompletion.choices[0]?.message?.content?.trim() || "";
+    const aiTextOutput = chatCompletion.choices[0]?.message?.content?.trim() || "";
 
     if (aiTextOutput) {
-      await Product.findByIdAndUpdate(productId, {
+      await Product.findByIdAndUpdate(targetObjectId, {
         aiSummary: aiTextOutput,
         aiSummaryUpdatedAt: new Date(),
       });
@@ -79,41 +87,31 @@ Calculated Average Rating: ${averageRating} / 5.0
   }
 }
 
-import mongoose from "mongoose";
-
 export async function POST(request: NextRequest) {
   try {
     await connectDb();
     const { userId, productId, orderId, rating, comment } = await request.json();
     
-    console.log("Review data received:", { userId, productId, orderId, rating, comment });
-    
     if (!userId || !productId || !rating || !comment || !orderId) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
     }
 
-    // Convert strings to ObjectIds
-    const userObjectId = new mongoose.Types.ObjectId(userId);
-    const productObjectId = new mongoose.Types.ObjectId(productId);
-    const orderObjectId = new mongoose.Types.ObjectId(orderId);
-
-    const order = await Order.findById(orderObjectId);
-    console.log("Order found:", order);
-    
+    const order = await Order.findById(orderId);
     if (!order) {
       return NextResponse.json({ message: "Order not found" }, { status: 404 });
     }
 
+    // ✨ Pure Clean Mongoose Instance (No validation crashes anymore!)
     const review = new Review({
-      userId: userObjectId,
-      productId: productObjectId,
-      orderId: orderObjectId,
+      userId,
+      productId,
+      orderId,
       rating,
       comment,
     });
 
     await review.save();
-
+    
     order.isReviewed = true;
     await order.save();
 
@@ -121,15 +119,9 @@ export async function POST(request: NextRequest) {
       console.error("AI aggregation update schedule leaked:", err),
     );
 
-    return NextResponse.json(
-      { message: "Review submitted successfully" },
-      { status: 200 },
-    );
+    return NextResponse.json({ message: "Review submitted successfully" }, { status: 200 });
   } catch (error) {
     console.log("Review error:", error);
-    return NextResponse.json(
-      { message: "Something went wrong", error: String(error) },
-      { status: 500 },
-    );
+    return NextResponse.json({ message: "Something went wrong", error: String(error) }, { status: 500 });
   }
 }

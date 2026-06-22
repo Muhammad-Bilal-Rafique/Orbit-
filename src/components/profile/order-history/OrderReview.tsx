@@ -12,7 +12,7 @@ import axios from "axios";
 interface ReviewModalProps {
   productId: string;
   productName: string;
-  orderId:string
+  orderId:string;
   onReviewSuccess: () => void;
 }
 

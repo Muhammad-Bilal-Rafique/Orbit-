@@ -102,10 +102,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       }
       return true;
     },
-    async jwt({ token, user }) {
+   async jwt({ token, user, account }) {
       if (user) {
-        token.id = user.id as string;
-        token.role = user.role as string;
+        if (account?.provider === "google") {
+          await connectDb();
+          const dbUser = await User.findOne({ email: user.email });
+          if (dbUser) {
+            token.id = dbUser._id.toString();
+            token.role = dbUser.role || "user";
+          }
+        } else {
+          token.id = user.id as string;
+          token.role = user.role as string;
+        }
       }
       return token;
     },
