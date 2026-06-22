@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description: "Manage your inventory and product catalog.",
 };
 
+export const dynamic = 'force-dynamic';
 
 export default async function page() {
   const Products: ProductTypes[] = await getProducts();

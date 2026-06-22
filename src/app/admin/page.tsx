@@ -15,6 +15,8 @@ export const metadata: Metadata = {
     "Real-time revenue orchestration pipelines and transactional volume charts.",
 };
 
+export const dynamic = 'force-dynamic';
+
 async function getDashboardDataTracer(from?: string, to?: string) {
   try {
     await connectDb();
