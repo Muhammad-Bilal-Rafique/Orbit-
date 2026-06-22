@@ -66,7 +66,7 @@ export default function AddProduct() {
           stock: Number(v.stock || 0),
         })),
       };
-      const res = await axios.post("/api/admin/addProduct", finalPayload);
+      const res = await axios.post("/api/admin/addProduct", finalPayload , {withCredentials:true});
       if (res.status === 200 || res.status === 201) {
         toast.success("Product successfully added into database.");
       }
