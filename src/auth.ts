@@ -28,7 +28,7 @@ declare module "next-auth" {
 }
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
-  trustHost:true,
+  trustHost: true,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -103,10 +103,25 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return true;
     },
     async jwt({ token, user }) {
+      // If it's the first signin
       if (user) {
         token.id = user.id as string;
         token.role = user.role as string;
       }
+
+      // ALWAYS ensure role exists - on every token refresh
+      if (!token.role && token.email) {
+        try {
+          await connectDb();
+          const dbUser = await User.findOne({ email: token.email });
+          if (dbUser) {
+            token.role = dbUser.role;
+          }
+        } catch (error) {
+          console.error("Error fetching role:", error);
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
