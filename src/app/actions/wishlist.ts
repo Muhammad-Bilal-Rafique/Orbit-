@@ -3,6 +3,7 @@
 import { connectDb } from "@/lib/connectDb";
 import { Wishlist } from "@/models/Wishlist";
 import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 export async function toggleWishlistAction(productId: string) {
   try {
@@ -18,11 +19,13 @@ export async function toggleWishlistAction(productId: string) {
 
     if (existingDoc) {
       await Wishlist.deleteOne({ _id: existingDoc._id });
-      return { success: true, action: "removed" };
     } else {
       await Wishlist.create({ userId, productId });
-      return { success: true, action: "added" };
     }
+
+        revalidatePath("/users/products"); 
+    revalidatePath("/users/profile/wishlist");
+     return { success: true, action: existingDoc ? "removed" : "added" };
   } catch (error) {
     return { success: false, error: "Internal server error execution lock" };
   }
