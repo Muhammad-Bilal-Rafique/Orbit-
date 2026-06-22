@@ -33,11 +33,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-
-    if (!user || user.role !== "admin") {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
     // 2. Extract Multivariant JSON Tree Structure Payload
     const body = await request.json();
     const {

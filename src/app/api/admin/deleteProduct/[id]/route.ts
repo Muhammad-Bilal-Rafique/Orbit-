@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDb } from "@/lib/connectDb";
 import { Product } from "@/models/Product";
-import { getToken } from "next-auth/jwt";
+import { auth } from "@/auth";
 import { User } from "@/models/User";
 
 export async function DELETE(
@@ -10,19 +10,17 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    const token = await getToken({
-      req: request,
-      secret: process.env.AUTH_SECRET,
-    });
+    const session = await auth();
 
-    if (!token) {
-      return NextResponse.json(
-        { message: "Unauthorized asset modification layout." },
-        { status: 401 },
-      );
+    console.log("Session:", session);
+    console.log("User role:", session?.user?.role);
+
+    if (!session || !session.user) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
+
     await connectDb();
-    const user = await User.findOne({ email: token.email });
+    const user = await User.findOne({ email: session.user.email });
 
     if (!user || user.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
