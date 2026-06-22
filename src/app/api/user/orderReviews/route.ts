@@ -81,18 +81,21 @@ Calculated Average Rating: ${averageRating} / 5.0
 
 export async function POST(request: NextRequest) {
   try {
-    await connectDb();
-    const { userId, productId, orderId, rating, comment } =
-      await request.json();
-    if (!userId || !productId || !rating || !comment || !orderId)
-      return NextResponse.json(
-        { message: "Missing required fields" },
-        { status: 400 },
-      );
+     await connectDb();
+    const { userId, productId, orderId, rating, comment } = await request.json();
+    
+    console.log("Review data received:", { userId, productId, orderId, rating, comment });
+    
+    if (!userId || !productId || !rating || !comment || !orderId) {
+      return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
+    }
 
     const order = await Order.findById(orderId);
-    if (!order)
+    console.log("Order found:", order);
+    
+    if (!order) {
       return NextResponse.json({ message: "Order not found" }, { status: 404 });
+    }
 
     const review = new Review({
       userId,
