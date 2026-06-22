@@ -71,6 +71,7 @@ export default function AddProduct() {
         toast.success("Product successfully added into database.");
       }
     } catch (error) {
+      console.log(error)
       toast.error("Failed to add product.");
     } finally {
       setIsSubmitting(false);

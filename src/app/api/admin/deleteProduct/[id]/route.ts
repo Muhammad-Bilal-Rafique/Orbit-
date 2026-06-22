@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDb } from "@/lib/connectDb";
 import { Product } from "@/models/Product";
 import { getToken } from "next-auth/jwt";
+import { User } from "@/models/User";
 
 export async function DELETE(
   request: NextRequest,
@@ -14,15 +15,19 @@ export async function DELETE(
       secret: process.env.AUTH_SECRET,
     });
 
-    if (!token || token.role !== "admin") {
+    if (!token) {
       return NextResponse.json(
         { message: "Unauthorized asset modification layout." },
         { status: 401 },
       );
     }
-    const { id } = await params;
-
     await connectDb();
+    const user = await User.findOne({ email: token.email });
+
+    if (!user || user.role !== "admin") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    const { id } = await params;
     await Product.findByIdAndDelete(id);
 
     return NextResponse.json({ message: "Product deleted" }, { status: 200 });
