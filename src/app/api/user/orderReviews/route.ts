@@ -79,9 +79,11 @@ Calculated Average Rating: ${averageRating} / 5.0
   }
 }
 
+import mongoose from "mongoose";
+
 export async function POST(request: NextRequest) {
   try {
-     await connectDb();
+    await connectDb();
     const { userId, productId, orderId, rating, comment } = await request.json();
     
     console.log("Review data received:", { userId, productId, orderId, rating, comment });
@@ -90,7 +92,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
     }
 
-    const order = await Order.findById(orderId);
+    // Convert strings to ObjectIds
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const productObjectId = new mongoose.Types.ObjectId(productId);
+    const orderObjectId = new mongoose.Types.ObjectId(orderId);
+
+    const order = await Order.findById(orderObjectId);
     console.log("Order found:", order);
     
     if (!order) {
@@ -98,9 +105,9 @@ export async function POST(request: NextRequest) {
     }
 
     const review = new Review({
-      userId,
-      productId,
-      orderId,
+      userId: userObjectId,
+      productId: productObjectId,
+      orderId: orderObjectId,
       rating,
       comment,
     });
@@ -119,9 +126,9 @@ export async function POST(request: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    console.log(error);
+    console.log("Review error:", error);
     return NextResponse.json(
-      { message: "Something went wrong" },
+      { message: "Something went wrong", error: String(error) },
       { status: 500 },
     );
   }
