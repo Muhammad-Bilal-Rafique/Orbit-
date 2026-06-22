@@ -37,13 +37,14 @@ export default function ReviewModal({ productId, productName,orderId,onReviewSuc
     setIsSubmitting(true);
     try {
       
-      await axios.post("/api/user/orderReviews", {userId:session?.user?.id ,orderId, productId , rating, comment});
+      await axios.post("/api/user/orderReviews", {userId:session?.user?.id ,orderId, productId , rating, comment},{withCredentials:true});
       toast.success("Review submitted successfully!");
       setIsOpen(false);
       onReviewSuccess();
       setRating(0);
       setComment("");
     } catch (error: any) {
+      console.log(error)
       toast.error("Failed to Upload review.");
     } finally {
       setIsSubmitting(false);
