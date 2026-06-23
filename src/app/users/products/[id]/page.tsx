@@ -6,6 +6,7 @@ import { Product } from "@/models/Product";
 import type { Metadata } from "next";
 import Reviews from "@/components/users-products/Reviews";
 import { Review } from "@/models/Review"; 
+import { User } from "@/models/User";
 
 interface Props {
   params: Promise<{ id: string }>;
