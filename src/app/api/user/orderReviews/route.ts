@@ -4,13 +4,12 @@ import { Order } from "@/models/Order";
 import { Review } from "@/models/Review";
 import { Product } from "@/models/Product";
 import Groq from "groq-sdk";
-import mongoose from "mongoose"; // ✨ standard mapping placement
+import mongoose from "mongoose"; 
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 async function triggerBackgroundAISummary(productIdStr: string) {
   try {
-    // 🌟 Check verify karkay handle karein taaki BSONError kabhi na aaye
     if (!mongoose.Types.ObjectId.isValid(productIdStr)) {
       console.error("Invalid Product ID passed to AI engine:", productIdStr);
       return;
@@ -39,11 +38,6 @@ async function triggerBackgroundAISummary(productIdStr: string) {
 Product Name: "${product.name}"
 Category: "${product.category || "Luxury Minimalist Wear"}"
 Product Description: "${product.description || ""}"
-
-[CRITICAL GROUND TRUTH METRICS - DO NOT CALCULATE YOUR OWN]:
-Total Reviews Volume: ${totalReviewsCount}
-Exact 5-Star Reviews Count: ${fiveStarCount} out of ${totalReviewsCount}
-Calculated Average Rating: ${averageRating} / 5.0
 `;
 
     const chatCompletion = await groq.chat.completions.create({
@@ -60,9 +54,7 @@ Calculated Average Rating: ${averageRating} / 5.0
           - Mention specific details if reviewers talk about the item's fit, fabric, quality, or style.
           - Clearly state overall customer satisfaction, main pros, and common cons.
           - Never call it tech hardware or electronics. It is a premium lifestyle apparel/wear asset.
-          - Do not start with phrases like 'Based on the reviews'. Start directly and keep the tone professional and clean.
-          - Never calculate or guess review numbers, math percentages, or star counts yourself. 
-- Strictly use the provided 'CRITICAL GROUND TRUTH METRICS' for any numbers or star ratio references in your summary.`,
+          - Do not start with phrases like 'Based on the reviews'. Start directly and keep the tone professional and clean..`,
         },
         {
           role: "user",
